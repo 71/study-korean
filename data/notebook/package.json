@@ -1,0 +1,14 @@
+{
+  "name": "@71/korean-words",
+  "main": "2bc3f0b1848c58a4@362.js",
+  "version": "362.0.0",
+  "homepage": "https://observablehq.com/@71/korean-words",
+  "author": {
+    "name": "Grégoire Geis",
+    "url": "https://observablehq.com/@71"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
