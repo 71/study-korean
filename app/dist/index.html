@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Study Korean</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Greg's web app for studying Korean.">
+
+    <script src="/app.js" type="module"></script>
+    <link href="/app.css" rel="stylesheet" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@300&family=IBM+Plex+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+      body {
+        --sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        --monospace: "Fira Code", monospace;
+
+        margin: 0;
+        font-family: var(--sans-serif);
+      }
+
+      body > #app {
+        display: flex;
+        min-height: 100vh;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+    </style>
+
+    <link rel="icon" type="image/png" href="/Logo.png">
+  </head>
+
+  <body>
+    <noscript>
+      <style>
+        body {
+          overflow: hidden;
+        }
+        h1, p {
+          font-family: Roboto, 'Segoe UI', sans-serif;
+        }
+        a {
+          text-decoration: underline;
+        }
+      </style>
+
+      <h1>Sorry, but this website requires Javascript.</h1>
+      <p>
+        If you'd like to know more about this app before trying it out, you can
+        check out its <a href="https://github.com/71/study-korean">code</a> on
+        GitHub.
+      </p>
+    </noscript>
+
+    <div id="app"></div>
+  </body>
+</html>

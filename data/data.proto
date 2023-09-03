@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+option java_package = "gregoiregeis.studykorean.proto";
+option java_multiple_files = true;
+
+message SentenceData {
+  message Token {
+    string text = 1;
+    optional int32 word_id = 2;
+  }
+
+  string text = 1;
+  repeated Token tokens = 2;
+}
+
+message WordData {
+  message Meaning {
+    // We don't encode examples right now because there's too many
+    // of them, we don't have accurate translations of them, and
+    // their quantity makes it prohibitive to tokenize them all.
+    //
+    // message Example {
+    //   message Conversation {
+    //     repeated string sentences = 1;
+    //   }
+    //
+    //   oneof type {
+    //     string phrase = 1;              // 구
+    //     string sentence = 2;            // 문장
+    //     Conversation conversation = 3;  // 대화
+    //   }
+    // }
+
+    message WordRef {
+      string text = 1;
+      repeated int32 word_ids = 2;
+    }
+
+    SentenceData definition = 1;
+    optional string translation = 2;
+    optional string definition_translation = 3;
+
+    // See comment above.
+    // repeated Example examples = 4;
+
+    repeated WordRef related = 5;
+    repeated WordRef original_forms = 6;
+    repeated WordRef synonyms = 7;
+    repeated WordRef antonyms = 8;
+    repeated string abbreviations = 9;
+  }
+
+  message RelatedForm {
+    string text = 1;
+
+    oneof id {
+      int32 verb_form = 2;  // 파생어; noun -> verb
+      int32 noun_form = 3;  // 가봐라; verb -> noun
+    }
+  }
+
+  int32 word_id = 1;
+  string text = 2;
+  string pos = 3;
+  string pos_ko = 4;
+  string pos_descr = 5;
+  string lexical_unit = 6;
+  optional string origin = 7;
+  optional string pronunciation = 8;
+  optional string sound_url = 9;
+
+  repeated Meaning meanings = 10;
+  repeated RelatedForm related_forms = 11;
+
+  repeated int32 example_ids = 12;
+
+  optional int32 most_common = 13;
+}
+
+message ExampleData {
+  int32 example_id = 1;
+  SentenceData ko_sentence = 2;
+  string en_translation = 3;
+  string en_translation_alt = 4;
+  string notes = 5;
+
+  optional int32 sound_id = 6;
+}
+
+message AllData {
+  repeated WordData words = 1;
+  repeated ExampleData examples = 2;
+}

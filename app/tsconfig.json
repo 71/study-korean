@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "lib": ["WebWorker", "DOM.Iterable"],
+    "target": "ES2022",
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+  },
+  "include": ["src"]
+}

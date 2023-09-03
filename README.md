@@ -48,7 +48,7 @@ Additionally:
 All data is produced by the [notebook] using the specified files:
 - `data/한국어 학습용 어휘 목록.xls`: most common Korean words ([source](https://www.korean.go.kr/front/etcData/etcDataView.do?mn_id=46&etc_seq=71))
 - `data/kodict.zip`: Korean words with definitions, translations, examples and more ([source](https://krdict.korean.go.kr/download/downloadList))
-- `data/Korean_Grammar_Sentences_by_Evita.apkg`: self-explenatory ([source][evita-anki])
+- `data/Korean_Grammar_Sentences_by_Evita.apkg`: self-explanatory ([source][evita-anki])
 
 Other files in `data/` are produced by the [notebook]. Tokenization is
 performed using [Open Korean Text](https://github.com/open-korean-text/open-korean-text).
