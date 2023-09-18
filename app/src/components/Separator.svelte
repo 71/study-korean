@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
   const pageWidth = readable(0, (set) => {
     const updatePageWidth = () => {
-      set(Math.min(innerWidth - 50, 800));
+      set(document.querySelector("main > .sections")!.clientWidth);
     };
 
     updatePageWidth();
@@ -26,10 +26,8 @@
   ];
 
   $: scale = $pageWidth < 500 ? .6 : 1;
-
-  function pathToPoints(xm: number, ym: number) {
-    return path.map(([x, y]) => [x * xm * scale, y * ym * scale].join(",")).join(" ");
-  }
+  $: pathToPoints = (xm: number, ym: number) =>
+    path.map(([x, y]) => [x * xm * scale, y * ym * scale].join(",")).join(" ");
 
   $: offsetX = path[path.length - 1][0] * scale;
   $: patternWidth = offsetX * 2;
@@ -37,7 +35,7 @@
 
   let svgElement: SVGElement;
 
-  onMount(() => {
+  function updateStroke() {
     const polyline = svgElement.querySelectorAll("polyline")!;
     const line = svgElement.querySelectorAll("line")!;
 
@@ -47,10 +45,16 @@
       element.style.setProperty("stroke-dasharray", length);
       element.style.setProperty("stroke-dashoffset", length);
     }
-  });
+  }
+
+  onMount(() => updateStroke());
+  $: svgElement !== undefined && ($pageWidth, updateStroke());
 </script>
 
-<div class="separator" role="separator">
+<!-- This is a small convenience, and should not be triggered using a keyboard. -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<div class="separator" role="separator" on:click>
   <svg bind:this={svgElement}>
     {#each [true, false] as border}
       {#each [[1, 1], [1, -1], [-1, 1], [-1, -1]] as [xm, ym]}

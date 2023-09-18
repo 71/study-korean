@@ -152,7 +152,7 @@ export class Db {
 
           if (existing === undefined) {
             hanMap.set(char, [[word], []]);
-          } else {
+          } else if (!existing[0].includes(word)) {
             existing[0].push(word);
           }
         }

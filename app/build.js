@@ -1,4 +1,5 @@
 import * as esbuild from "esbuild";
+import * as fs from "fs/promises";
 import sveltePlugin from "esbuild-svelte";
 import sveltePreprocess from "svelte-preprocess";
 
@@ -51,4 +52,5 @@ if (dev) {
   });
 } else {
   await esbuild.build(config);
+  await fs.copyFile("dist/index.html", "dist/404.html");
 }

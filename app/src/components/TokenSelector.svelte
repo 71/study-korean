@@ -3,6 +3,7 @@
 	import { AmbiguousTokenSelection, TokenSelection } from "./Token.svelte";
 	import { db } from "../store";
 	import Line from "./Line.svelte";
+	import { triggerRedraw } from "./TokenLines.svelte";
 
   export let inputSelection: AmbiguousTokenSelection;
   export let selectedSelection: TokenSelection;
@@ -29,10 +30,11 @@
   $: updateSelectedToken(selectedTokenIndex);
 </script>
 
-<div bind:this={selectorElement} class="token-selector">
+<div bind:this={selectorElement} class="token-selector" on:scroll={() => triggerRedraw()}>
   <span class="tokens">
     {#each inputSelection.tokens as token, i}
-      <span class="token"
+      <span
+        class="token" class:selected={selectedTokenIndex === i}
         on:click={() => selectedTokenIndex = i}
         on:keypress={() => selectedTokenIndex = i}
         role="button"
@@ -48,12 +50,13 @@
 
 <style>
   .token-selector {
-    margin-bottom: 2em;
+    margin-bottom: 1.6em;
     border: 1px solid white;
     border-left: none;
     border-right: none;
     text-wrap: nowrap;
     overflow-x: auto;
+    padding: .1em 0 .3em 0;
 
     /* Hide scrollbars: https://stackoverflow.com/a/38994837 */
     scrollbar-width: none;  /* Firefox */
@@ -69,9 +72,14 @@
 
     & > .token {
       margin-left: 1em;
+      opacity: .7;
 
       &:first-child {
         margin-left: 0;
+      }
+
+      &.selected {
+        opacity: 1;
       }
     }
   }

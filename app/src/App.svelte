@@ -77,13 +77,17 @@
 
   function updateSelection(index: number, selection: AmbiguousTokenSelection | undefined) {
     // `+ 1` to include item at `index`, `- 1` to remove `sentenceSelection`.
+    if (extendedSentenceSelection === undefined) {
+      index--;
+    }
     if ((selection?.tokens.length ?? 0) === 0) {
       selections = selections.slice(0, index + 1 - 1);
     } else {
       selections = [...selections.slice(0, index + 1 - 1), selection!];
     }
-    console.log({ selections });
   }
+
+  let sectionsElement: HTMLElement;
 </script>
 
 <TokenLines />
@@ -103,10 +107,10 @@
     {#if sections.length === 0}
       <span>No word selected</span>
     {:else}
-      <div class="vocabulary">
+      <div class="sections" bind:this={sectionsElement}>
         {#each sections as selection, i}
           {#if i > 0}
-            <Separator />
+            <Separator on:click={() => sectionsElement.children[i - 1].scrollIntoView({ behavior: "smooth" })} />
           {:else}
             <div role="separator" style="height: 1em;" />
           {/if}
@@ -149,7 +153,7 @@
   main {
     width: 100%;
     max-width: 800px;
-    padding: 0 1em 4em 1em;
+    padding: 0 1em 8em 1em;
 
     & > input {
       padding: 1em 0;

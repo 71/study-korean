@@ -1,5 +1,7 @@
 <script lang="ts" context="module">
 	import { writable } from "svelte/store";
+	import { TransitionConfig } from "svelte/transition";
+	import { showTranslations } from "../store";
 
   type Line = readonly [target: HTMLElement, pathData: string, fromMask: string, toMask: string];
 
@@ -120,32 +122,38 @@
     };
   }
 
-  function setDashoffset(node: SVGPathElement, _: string) {
-    // We accept a dummy parameter to make sure we reload these properties on update.
+  export function triggerRedraw() {
+
+  }
+
+  showTranslations.subscribe(() => triggerRedraw());
+
+  function pathLength(node: SVGPathElement, _: unknown, { direction }: { readonly direction: "in" | "out" | "both" }): TransitionConfig {
     const length = node.getTotalLength();
+    const multiplier = direction === "in" ? 1 : -1;
 
-    node.style.setProperty("stroke-dasharray", length.toString());
-    node.style.setProperty("stroke-dashoffset", length.toString());
-    node.style.setProperty("animation-duration", `${200 + length / 2}ms`);
-
-    // Force another animation if the path changed.
-    node.style.animation = "none";
-    void node.clientWidth;  // Trigger reflow.
-    setTimeout(() => node.style.animation = "", 200);
+    return {
+      duration: (direction === "in" ? 200 : 0) + node.getTotalLength() / 3,
+      css: (t) => `
+        stroke-dasharray: ${length};
+        stroke-dashoffset: ${length * (1 - t) * multiplier};
+        ${direction === "in" ? "" : `opacity: ${t};`}
+      `,
+    };
   }
 </script>
 
 <div class="token-lines" role="presentation">
   <svg class="masks">
-    {#each $lines as [target,, fromMask, toMask] (target)}
+    {#each $lines as [, pathData, fromMask, toMask] (pathData)}
       <polygon points={fromMask} />
       <polygon points={toMask} />
     {/each}
   </svg>
 
   <svg class="lines">
-    {#each $lines as [target, pathData] (target)}
-      <path d={pathData} use:setDashoffset={pathData} />
+    {#each $lines as [, pathData] (pathData)}
+      <path d={pathData} in:pathLength out:pathLength />
     {/each}
   </svg>
 </div>
@@ -168,15 +176,10 @@
     stroke: var(--accent-1);
     fill: none;
     filter: drop-shadow(0px 0px 1px var(--accent-1));
-    animation: remove-dashoffset 500ms ease-out forwards;
   }
 
   polygon {
     fill: var(--background);
     z-index: 1;
-  }
-
-  @keyframes remove-dashoffset {
-    to { stroke-dashoffset: 0; }
   }
 </style>

@@ -4,6 +4,7 @@
 	import type { Db } from "../db";
 	import { resizeTokens } from "../utils/tokens";
 	import Token, { AmbiguousTokenSelection } from "./Token.svelte";
+	import { debounce, throttle } from "../utils";
 
   export let okt: typeof import("oktjs") | undefined;
   export let db: Db | undefined;
@@ -111,11 +112,13 @@
     restoreSelections(savedSelections);
   }
 
+  const refreshSentenceInputTokensDebounced = debounce(400, refreshSentenceInputTokens);
+
   function handleSentenceInput(e: Event) {
     sentence = sentenceElement.textContent ?? "";
 
     if (okt !== undefined && db !== undefined && !(e as InputEvent).isComposing) {
-      refreshSentenceInputTokens();
+      refreshSentenceInputTokensDebounced();
     }
   }
 
@@ -135,7 +138,7 @@
   }
 
   onMount(() => {
-    const selectionChangeEventListener = () => {
+    const rawSelectionChangeEventListener = () => {
       const selection = document.getSelection()!;
 
       if (!sentenceElement.contains(selection.focusNode)) {
@@ -148,6 +151,8 @@
 
       selectionAtEnd = selection.focusNode?.textContent?.length === selection.focusOffset;
     };
+
+    const selectionChangeEventListener = throttle(400, rawSelectionChangeEventListener);
 
     document.addEventListener("selectionchange", selectionChangeEventListener);
 
@@ -172,5 +177,9 @@
     font-family: var(--title-font-family);
     font-size: 2.4em;
     white-space: pre-wrap; /* Prevents nbsp insertion in contenteditable. */
+  }
+
+  p[contenteditable] {
+    margin: .5em 0;
   }
 </style>

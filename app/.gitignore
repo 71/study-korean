@@ -1,4 +1,6 @@
 node_modules/
 dist/*
 !dist/index.html
+!dist/icon.png
+!dist/manifest.webmanifest
 src/data-proto.js

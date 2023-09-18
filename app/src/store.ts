@@ -138,6 +138,10 @@ const uiWords = {
   위: "Noun",
   한자: "Noun",
   로마자: "Noun",
+  유의어: "Noun",
+  반의어: "Noun",
+  파생어: "Noun",
+  참고어: "Noun",
 
   // POS:
   //   [...new Set([...DB.dictionary.values()].flat().map(x => x.posKo))].sort().join("\n")
@@ -167,3 +171,5 @@ export const uiWordIds = derived(db, (db) =>
       .map(([uiWord, pos]) => [uiWord, db.wordByPos(uiWord, pos)!]),
   ) as { readonly [Word in keyof typeof uiWords]: WordData; },
 );
+
+console.log(uiWordIds)

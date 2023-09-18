@@ -1,0 +1,17 @@
+{
+  "name": "Study Korean",
+  "short_name": "Study Korean",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0b00",
+  "theme_color": "#171407",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ]
+}
