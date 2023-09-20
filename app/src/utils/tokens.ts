@@ -26,11 +26,15 @@ export function resizeTokens(tokens: readonly SimpleToken[]) {
 
     if (text.trim().length === 0 && result.length > 0) {
       result[result.length - 1].wordIds = [...result[result.length - 1].wordIds, ...wordIds];
-      result.push({ text: text, wordIds: emptyArray });
+      if (text.length > 0) {
+        result.push({ text: text, wordIds: emptyArray });
+      }
     } else {
       result.push({ text, wordIds });
     }
   }
+
+  console.log("resized", tokens, "to", result);
 
   return result;
 }

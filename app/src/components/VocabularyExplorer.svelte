@@ -42,8 +42,8 @@
   });
 
   const enum Type {
-    Korean,
-    English,
+    Hangul,
+    Foreign,
     Han,
   }
 
@@ -73,8 +73,10 @@
   $: synonyms = tokenData !== undefined ? $db.synonymsOf(tokenData) : [];
 
   $: type = typeof token === "number" || /\p{Script=Hangul}/u.test(token)
-    ? Type.Korean
-    : /^\p{Script=Han}$/u.test(token) ? Type.Han : Type.English;
+    ? Type.Hangul
+    : /^\p{Script=Han}$/u.test(token)
+      ? Type.Han
+      : Type.Foreign;
 
   let wordElement: WordElement;
 
@@ -105,10 +107,10 @@
     const utterance = new SpeechSynthesisUtterance(tokenText);
 
     switch (type) {
-    case Type.Korean:
+    case Type.Hangul:
       utterance.lang = "ko-KR";
       break;
-    case Type.English:
+    case Type.Foreign:
       utterance.lang = "en-US";
       break;
     case Type.Han:
@@ -131,69 +133,73 @@
 </script>
 
 <div bind:this={wordElement}>
-  <div class="main-info">
-    <div
-      class="text-box"
-      on:click={playWordAudio}
-      on:keypress={withKey("Space", playWordAudio)}
-      role="button"
-      tabindex="0"
-    >
-      <div class="pronunciation" class:hidden={tokenData === undefined || tokenData.pronunciation == null || tokenData.pronunciation === tokenText}>
-        {tokenData?.pronunciation}
+  {#if type !== Type.Foreign}
+    <div class="main-info">
+      <Line from={inputSelection.source} to={tokenElement} />
+
+      <div
+        class="text-box"
+        on:click={playWordAudio}
+        on:keypress={withKey("Space", playWordAudio)}
+        role="button"
+        tabindex="0"
+      >
+        <div class="pronunciation" class:hidden={tokenData === undefined || tokenData.pronunciation == null || tokenData.pronunciation === tokenText}>
+          {tokenData?.pronunciation}
+        </div>
+
+        <span class="text">{tokenText}</span>
       </div>
 
-      <span class="text">{tokenText}</span>
-    </div>
+      <div class="info">
+        {#if tokenData !== undefined && tokenData.origin != null}
+          <div>
+            <em class="hanja">
+              {#each tokenData.origin as character}
+                <Token text={character} wordIds={[]} bind:selection={outputSelection} />
+              {/each}
+            </em>
+          </div>
+        {/if}
 
-    <div class="info">
-      {#if tokenData !== undefined && tokenData.origin != null}
-        <div>
-          <em class="hanja">
-            {#each tokenData.origin as character}
-              <Token text={character} wordIds={[]} bind:selection={outputSelection} />
-            {/each}
+        {#if hanReadings !== undefined && hanReadings.length > 0}
+          <div>
+            <em class="readings">
+              {#each hanReadings as hanReading, i}
+                {#if i > 0},{/if}
+                <span>{hanReading}</span>
+              {/each}
+            </em>
+          </div>
+        {/if}
+
+        <div class="pos-picker">
+          <em>
+            <Token text={koPos} wordIds={[$uiWordIds[koPos].wordId]} bind:selection={outputSelection} />
           </em>
+
+          {#each synonyms as synonym, i}
+            {#if i > 0}
+              |
+            {/if}
+            <span>{synonym.posKo}</span>
+          {/each}
         </div>
-      {/if}
 
-      {#if hanReadings !== undefined && hanReadings.length > 0}
-        <div>
-          <em class="readings">
-            {#each hanReadings as hanReading, i}
-              {#if i > 0},{/if}
-              <span>{hanReading}</span>
-            {/each}
-          </em>
-        </div>
-      {/if}
-
-      <div class="pos-picker">
-        <em>
-          <Token text={koPos} wordIds={[$uiWordIds[koPos].wordId]} bind:selection={outputSelection} />
-        </em>
-
-        {#each synonyms as synonym, i}
-          {#if i > 0}
-            |
-          {/if}
-          <span>{synonym.posKo}</span>
-        {/each}
+        {#if tokenData !== undefined && tokenData.mostCommon != null}
+          <div>
+            <Token text="사용" wordIds={[$uiWordIds.사용.wordId]} bind:selection={outputSelection} />
+            <Token text="빈도" wordIds={[$uiWordIds.빈도.wordId]} bind:selection={outputSelection} />수
+            <em>{tokenData.mostCommon}</em>
+            <!--nobr-->
+            <Token text="위" wordIds={[$uiWordIds.위.wordId]} bind:selection={outputSelection} />
+          </div>
+        {/if}
       </div>
-
-      {#if tokenData !== undefined && tokenData.mostCommon != null}
-        <div>
-          <Token text="사용" wordIds={[$uiWordIds.사용.wordId]} bind:selection={outputSelection} />
-          <Token text="빈도" wordIds={[$uiWordIds.빈도.wordId]} bind:selection={outputSelection} />수
-          <em>{tokenData.mostCommon}</em>
-          <!--nobr-->
-          <Token text="위" wordIds={[$uiWordIds.위.wordId]} bind:selection={outputSelection} />
-        </div>
-      {/if}
     </div>
-  </div>
+  {/if}
 
-  {#if type === Type.Korean}
+  {#if type === Type.Hangul}
     {#each tokenData?.meanings ?? [] as meaning, i}
       {#if i > 0}
         <div class="separator-wrapper" role="separator">
@@ -239,18 +245,20 @@
       {/each}
     </table>
   {:else}
-    {#each $db.wordsWithEnglishTranslationIncluding(tokenText) as word}
-      <div>
-        <span class="english">
-          <Token text={word.text} wordIds={[word.wordId]} bind:selection={outputSelection} />
-          ({nn(word.meanings).find((m) => nn(m.translation).includes(tokenText))?.translation})
-        </span>
-      </div>
-    {/each}
+    <table class="english" cellspacing=0>
+      {#each $db.wordsWithEnglishTranslationIncluding(tokenText) as word}
+        <tr>
+          <td>
+            <Token text={word.text} wordIds={[word.wordId]} bind:selection={outputSelection} />
+          </td>
+          <td>
+            {nn(word.meanings).find((m) => nn(m.translation).includes(tokenText))?.translation}
+          </td>
+        </tr>
+      {/each}
+    </table>
   {/if}
 </div>
-
-<Line from={inputSelection.source} to={tokenElement} />
 
 <style>
   :root {
@@ -343,7 +351,7 @@
     background-color: color-mix(in srgb, var(--background) 70%, transparent);
   }
 
-  table.hanja {
+  table {
     font-size: 1.2em;
 
     & td {
@@ -354,7 +362,7 @@
       vertical-align: top;
     }
 
-    & td:nth-child(3) {
+    &.hanja td:nth-child(3) {
       padding-right: 0;
       text-wrap: inherit;
       width: 100%;

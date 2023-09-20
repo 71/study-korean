@@ -22,11 +22,10 @@
     ? $route.sentence
     : localStorage.getItem("searchSentence") ?? "안녕하세요";
 
-  $: localStorage.setItem("searchSentence", sentence);
+  $: localStorage.setItem("searchSentence", sentence.trim());
 
   let sentenceSelection: AmbiguousTokenSelection | undefined = undefined;
   let suggestions: readonly string[] = [];
-  let selectionAtEnd = false;
 
   // Breadcrumbs.
   let breadcrumbs: readonly string[] = [];
@@ -35,7 +34,7 @@
   $: navigate(
     sentence.trim().length === 0
       ? { kind: RouteKind.Index }
-      : { kind: RouteKind.SentenceExplorer, sentence, words: breadcrumbs },
+      : { kind: RouteKind.SentenceExplorer, sentence: sentence.trim(), words: breadcrumbs },
     { inplace: true },
   );
 
@@ -49,7 +48,7 @@
 
   // Vocabulary.
   $: extendedSentenceSelection = ((): AmbiguousTokenSelection | undefined => {
-    if (db === undefined || sentenceSelection === undefined || !selectionAtEnd) {
+    if (db === undefined || sentenceSelection === undefined) {
       return sentenceSelection;
     }
 
@@ -73,7 +72,7 @@
     extendedSentenceSelection, ...selections,
   ];
 
-  $: console.log({ extendedSentenceSelection, sections, selections });
+  $: console.log({ sections, sentenceSelection })
 
   function updateSelection(index: number, selection: AmbiguousTokenSelection | undefined) {
     // `+ 1` to include item at `index`, `- 1` to remove `sentenceSelection`.
@@ -99,37 +98,33 @@
 </div>
 
 <main>
-  <SentenceInput {db} {okt} bind:selection={sentenceSelection} bind:suggestions bind:sentence bind:selectionAtEnd />
+  <SentenceInput {db} {okt} bind:selection={sentenceSelection} bind:suggestions bind:sentence />
 
   {#await Promise.all([oktPromise, dbPromise])}
     <p>Loading....</p>
   {:then _}
-    {#if sections.length === 0}
-      <span>No word selected</span>
-    {:else}
-      <div class="sections" bind:this={sectionsElement}>
-        {#each sections as selection, i}
-          {#if i > 0}
-            <Separator on:click={() => sectionsElement.children[i - 1].scrollIntoView({ behavior: "smooth" })} />
-          {:else}
-            <div role="separator" style="height: 1em;" />
-          {/if}
+    <div class="sections" bind:this={sectionsElement}>
+      {#each sections as selection, i}
+        {#if i > 0}
+          <Separator on:click={() => sectionsElement.children[i - 1].scrollIntoView({ behavior: "smooth" })} />
+        {:else}
+          <div role="separator" style="height: 1em;" />
+        {/if}
 
-          <VocabularySelectorExplorer
-            inputSelection={selection}
-            on:tokenSelected={({ detail: selection }) => updateSelection(i, selection)}
-            on:isProminent={({ detail: isProminent }) => {
-              if (isProminent) {
-                breadcrumbs = sections.slice(0, i + 1).map((t) => `${t.tokens[0]}`);
-                prominentSelection = selections[i - 1];
-              } else {
-                breadcrumbs = [];
-                prominentSelection = undefined;
-              }
-            }} />
-        {/each}
-      </div>
-    {/if}
+        <VocabularySelectorExplorer
+          inputSelection={selection}
+          on:tokenSelected={({ detail: selection }) => updateSelection(i, selection)}
+          on:isProminent={({ detail: isProminent }) => {
+            if (isProminent) {
+              breadcrumbs = sections.slice(0, i + 1).map((t) => `${t.tokens[0]}`);
+              prominentSelection = selections[i - 1];
+            } else {
+              breadcrumbs = [];
+              prominentSelection = undefined;
+            }
+          }} />
+      {/each}
+    </div>
   {:catch error}
     <p>Could not load database: {error}</p>
   {/await}

@@ -55,8 +55,9 @@
   let element: HTMLElement;
   let thisSelection: AmbiguousTokenSelection;
 
+  $: selectable = wordIds.length > 0 || /^[\p{Script=Han}\p{Script=Hangul}]+$/u.test(text);
   $: thisSelection = { source: element, tokens: wordIds.length === 0 ? [text] : wordIds };
-  $: selectionHandler = () => selection = thisSelection;
+  $: selectionHandler = selectable ? (() => selection = thisSelection) : undefined;
   $: selected = selection === thisSelection;
 </script>
 

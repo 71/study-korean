@@ -31,7 +31,7 @@
 >
   <table>
     {#if $showTranslations}
-      <tr>
+      <tr class="translation">
         <td class="header">
           <Token text="번역" wordIds={[$uiWordIds.번역.wordId]} bind:selection />
         </td>
@@ -39,12 +39,14 @@
           {#each meaning.translation?.split(";") ?? "" as translation, i}
             {#if i > 0},{/if}
             <span>{translation.trim()}</span>
+          {:else}
+            <em>No translation available</em>
           {/each}
         </td>
       </tr>
     {/if}
 
-    <tr>
+    <tr class="definition">
       <td class="header">
         <Token text="정의" wordIds={[$uiWordIds.정의.wordId]} bind:selection />
       </td>
@@ -54,6 +56,17 @@
         {/each}
       </td>
     </tr>
+
+    {#if $showTranslations && meaning.definitionTranslation != null}
+      <tr class="definition-translation">
+        <td class="header">
+          <Token text="번역" wordIds={[$uiWordIds.번역.wordId]} bind:selection />
+        </td>
+        <td>
+          {meaning.definitionTranslation}
+        </td>
+      </tr>
+    {/if}
   </table>
 
   {#if relatedWords.length > 0}
@@ -82,6 +95,18 @@
     font-size: 1.3em;
   }
 
+  tr.translation, tr.definition-translation {
+    color: var(--fg-secondary);
+
+    & td:last-child {
+      font-size: .8em;
+    }
+  }
+
+  tr.translation td:last-child {
+    text-transform: uppercase;
+  }
+
   td.header {
     padding: 0 1em 1em 0;
     font-size: .7em;
@@ -96,7 +121,7 @@
   }
 
   .related-words .pair {
-    border: 1px solid white;
+    border: 1px solid var(--fg-secondary);
     display: inline-block;
     padding: 0.2em;
     font-weight: 200;

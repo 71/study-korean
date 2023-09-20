@@ -141,7 +141,7 @@ const uiWords = {
   유의어: "Noun",
   반의어: "Noun",
   파생어: "Noun",
-  참고어: "Noun",
+  참고: "Noun",
 
   // POS:
   //   [...new Set([...DB.dictionary.values()].flat().map(x => x.posKo))].sort().join("\n")
@@ -150,13 +150,13 @@ const uiWords = {
   대명사: "Noun",
   동사: "Noun",
   명사: "Noun",
-  "보조 동사": "Noun",
-  "보조 형용사": "Noun",
+  "보조 동사": "Phrase",
+  "보조 형용사": "Phrase",
   부사: "Noun",
   수사: "Noun",
   약어: "Noun",
   어미: "Noun",
-  "의존 명사": "Noun",
+  "의존 명사": "Phrase",
   접사: "Noun",
   조사: "Noun",
   형용사: "Noun",

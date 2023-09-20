@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
 
 	import type { Db } from "../db";
 	import { resizeTokens } from "../utils/tokens";
 	import Token, { AmbiguousTokenSelection } from "./Token.svelte";
-	import { debounce, throttle } from "../utils";
+	import { throttle } from "../utils";
 
   export let okt: typeof import("oktjs") | undefined;
   export let db: Db | undefined;
@@ -13,8 +13,16 @@
   export let selection: AmbiguousTokenSelection | undefined;
 
   export let suggestions: readonly string[];
-  export let selectionAtEnd: boolean;
 
+  const enum Type {
+    Hangul,
+    Foreign,
+  }
+
+  $: sentenceOrPlaceholder = sentence.length === 0 ? "안녕하세요" : sentence;
+  $: type = /\p{Script=Hangul}/u.test(sentenceOrPlaceholder) ? Type.Hangul : Type.Foreign;
+
+  let selectionAtEnd = false;
   let sentenceElement: HTMLElement;
   let sentenceInputTokens: { text: string; wordIds: readonly number[]; }[] = [];
 
@@ -102,27 +110,43 @@
     }
 
     const savedSelections = saveSelections();
-    sentenceInputTokens = resizeTokens(
-      okt.tokenize(okt.normalize(sentence))
-        .map((token) => ({
-          text: token.text,
-          wordIds: db!.wordByText(token.stem ?? token.text).map((word) => word.wordId),
-        })),
-    );
-    restoreSelections(savedSelections);
+
+    switch (type) {
+    case Type.Hangul:
+      sentenceInputTokens = resizeTokens(
+        okt.tokenize(okt.normalize(sentenceOrPlaceholder))
+          .map((token) => ({
+            text: token.text,
+            wordIds: db!.wordByText(token.stem ?? token.text).map((word) => word.wordId),
+          })),
+      );
+      break;
+    case Type.Foreign:
+      sentenceInputTokens = [{ text: sentenceOrPlaceholder, wordIds: [] }];
+      break;
+    }
+
+    tick().then(() => {
+      // If the sentence was empty, the browser might have added a line break.
+      // Or in some cases it might have inserted things while we added a span.
+      for (const child of sentenceElement.childNodes) {
+        if (child.nodeType !== Node.ELEMENT_NODE || (child as Element).tagName !== "SPAN") {
+          child.remove();
+        }
+      }
+      restoreSelections(savedSelections);
+    });
   }
 
-  const refreshSentenceInputTokensDebounced = debounce(400, refreshSentenceInputTokens);
-
   function handleSentenceInput(e: Event) {
-    sentence = sentenceElement.textContent ?? "";
+    sentence = sentenceElement.textContent?.replace(/\n/g, " ") ?? "";
 
     if (okt !== undefined && db !== undefined && !(e as InputEvent).isComposing) {
-      refreshSentenceInputTokensDebounced();
+      tick().then(refreshSentenceInputTokens);
     }
   }
 
-  $: suggestions = db === undefined ? [] : ((): readonly string[] => {
+  $: suggestions = db === undefined || !selectionAtEnd ? [] : ((): readonly string[] => {
     const lastWord = /\p{Script=Hangul}+$/u.exec(sentence.trimEnd());
 
     if (lastWord === null) {
@@ -135,6 +159,10 @@
   $: if (db !== undefined && okt !== undefined) {
     sentenceElement.replaceChildren();
     refreshSentenceInputTokens();
+  }
+
+  $: if (type === Type.Foreign && sentence.length > 0) {
+    // TODO: selection = { source: sentenceElement, tokens: [sentence] };
   }
 
   onMount(() => {
@@ -161,15 +189,24 @@
 </script>
 
 <div class="sentence-input">
-  <p contenteditable bind:this={sentenceElement} on:input={handleSentenceInput}>
-    <!-- Display sentence at first while waiting for the DB and tokenizer to load. -->
-    <span class=placeholder>
-      {sentence}
-    </span>
-    {#each sentenceInputTokens as token}
-      <Token text={token.text} wordIds={token.wordIds} bind:selection />
-    {/each}
-  </p>
+  <span
+    contenteditable="plaintext-only"
+    class:placeholder={sentenceOrPlaceholder !== sentence}
+    bind:this={sentenceElement}
+    on:input={handleSentenceInput}
+  >
+    <!-- Key contents with `sentenceInputTokens` to force a redraw, otherwise Svelte gets confused
+         when editing text and modifying the tokens at the same time.
+    -->
+    {#key sentenceInputTokens}
+      {#each sentenceInputTokens as token}
+        <Token text={token.text} wordIds={token.wordIds} bind:selection />
+      {:else}
+        <!-- Display sentence at first while waiting for the DB and tokenizer to load. -->
+        <span class="pending">{sentenceOrPlaceholder}</span>
+      {/each}
+    {/key}
+  </span>
 </div>
 
 <style>
@@ -177,9 +214,15 @@
     font-family: var(--title-font-family);
     font-size: 2.4em;
     white-space: pre-wrap; /* Prevents nbsp insertion in contenteditable. */
+    margin: 0.8em 0;
   }
 
-  p[contenteditable] {
+  span[contenteditable] {
     margin: .5em 0;
+    outline: none;
+
+    &.placeholder {
+      color: var(--fg-secondary);
+    }
   }
 </style>

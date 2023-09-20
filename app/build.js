@@ -38,7 +38,7 @@ const config = {
   define: {
     DEV: `${dev}`,
   },
-  publicPath: dev ? "/" : undefined,
+  publicPath: "/",
 };
 
 if (dev) {

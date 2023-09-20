@@ -56,7 +56,6 @@
     border-right: none;
     text-wrap: nowrap;
     overflow-x: auto;
-    padding: .1em 0 .3em 0;
 
     /* Hide scrollbars: https://stackoverflow.com/a/38994837 */
     scrollbar-width: none;  /* Firefox */
@@ -73,6 +72,8 @@
     & > .token {
       margin-left: 1em;
       opacity: .7;
+      display: inline-block;
+      padding: .05em 0 .15em 0;
 
       &:first-child {
         margin-left: 0;
