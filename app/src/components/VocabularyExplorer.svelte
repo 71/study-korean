@@ -59,9 +59,11 @@
   import Token, { AmbiguousTokenSelection, TokenSelection } from "./Token.svelte";
 	import Line from "./Line.svelte";
 	import { nn, summarizeTranslations } from "../utils";
+	import { Meaning } from "../db";
 
   const dispatch = createEventDispatcher<{
     tokenSelected: AmbiguousTokenSelection | undefined,
+    tokenReplaced: TokenSelection | undefined,
     isProminent: boolean,
   }>();
 
@@ -70,7 +72,7 @@
   $: token = inputSelection.token;
   $: tokenData = typeof token === "string" ? undefined : $db.wordById(token);
   $: tokenText = typeof token === "string" ? token : tokenData!.text;
-  $: synonyms = tokenData !== undefined ? $db.synonymsOf(tokenData) : [];
+  $: homographs = tokenData !== undefined ? $db.homographsOf(tokenData) : [];
 
   $: type = typeof token === "number" || /\p{Script=Hangul}/u.test(token)
     ? Type.Hangul
@@ -81,8 +83,10 @@
   let wordElement: WordElement;
 
   $: tokenElement = wordElement?.querySelector(".text-box") as HTMLElement;
-  $: koPos = (tokenData?.posKo ?? typeToPos[type]) as keyof typeof $uiWordIds;
+  $: koPos = (tokenData !== undefined ? $db.posKoreanText(tokenData.pos) : typeToPos[type]) as keyof typeof $uiWordIds;
 
+  $: meanings = type === Type.Hangul ? tokenData!.meanings as Meaning[] : undefined;
+  $: mostCommon = type === Type.Hangul ? $db.wordByText(tokenText)?.mostCommon : undefined;
   $: [wordsWithHan, hanReadings] = type === Type.Han ? $db.wordsWithHan(tokenText) : [undefined, undefined];
 
   onMount(() => {
@@ -114,7 +118,7 @@
       utterance.lang = "en-US";
       break;
     case Type.Han:
-      // When tested, Chrome did not read the token aloud when clicked.
+      // When tested, Chrome did not read the Han token aloud when clicked.
       //
       // We _could_ use `lang = "zh-CN"`, but this pronunciation is likely very different
       // from the Korean one so instead we don't do anything.
@@ -130,6 +134,10 @@
 
     speechSynthesis.speak(utterance);
   }
+
+  function replaceWith(wordId: number) {
+    dispatch("tokenReplaced", { source: inputSelection.source, token: wordId });
+  }
 </script>
 
 <div bind:this={wordElement}>
@@ -144,7 +152,7 @@
         role="button"
         tabindex="0"
       >
-        <div class="pronunciation" class:hidden={tokenData === undefined || tokenData.pronunciation == null || tokenData.pronunciation === tokenText}>
+        <div class="pronunciation" class:hidden={(tokenData?.pronunciation ?? "") === "" || nn(tokenData).pronunciation === tokenText}>
           {tokenData?.pronunciation}
         </div>
 
@@ -178,19 +186,24 @@
             <Token text={koPos} wordIds={[$uiWordIds[koPos].wordId]} bind:selection={outputSelection} />
           </em>
 
-          {#each synonyms as synonym, i}
+          {#each homographs as homograph, i}
             {#if i > 0}
               |
             {/if}
-            <span>{synonym.posKo}</span>
+            <span
+              on:click={() => replaceWith(homograph.wordId)}
+              on:keypress={withKey("Space", () => replaceWith(homograph.wordId))}
+              role="button"
+              tabindex=0
+            >{homograph.pos}</span>
           {/each}
         </div>
 
-        {#if tokenData !== undefined && tokenData.mostCommon != null}
+        {#if mostCommon != null}
           <div>
             <Token text="사용" wordIds={[$uiWordIds.사용.wordId]} bind:selection={outputSelection} />
             <Token text="빈도" wordIds={[$uiWordIds.빈도.wordId]} bind:selection={outputSelection} />수
-            <em>{tokenData.mostCommon}</em>
+            <em>{mostCommon}</em>
             <!--nobr-->
             <Token text="위" wordIds={[$uiWordIds.위.wordId]} bind:selection={outputSelection} />
           </div>
@@ -200,7 +213,7 @@
   {/if}
 
   {#if type === Type.Hangul}
-    {#each tokenData?.meanings ?? [] as meaning, i}
+    {#each meanings ?? [] as meaning, i}
       {#if i > 0}
         <div class="separator-wrapper" role="separator">
           <hr />

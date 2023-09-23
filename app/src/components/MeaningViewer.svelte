@@ -1,10 +1,11 @@
 <script lang="ts">
+	import { Meaning } from "../db";
 	import { showTranslations, uiWordIds } from "../store";
 	import { nn } from "../utils";
 	import { resizeTokens } from "../utils/tokens";
 	import Token, { AmbiguousTokenSelection } from "./Token.svelte";
 
-  export let meaning: import("../data-proto.d.ts").WordData.IMeaning;
+  export let meaning: Meaning;
   export let selection: AmbiguousTokenSelection | undefined;
 
   const emptyList: readonly never[] = [];

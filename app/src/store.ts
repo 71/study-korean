@@ -1,5 +1,5 @@
 import { derived, readonly, writable } from "svelte/store";
-import { Db, WordData } from "./db";
+import { Db, DefinedWord, Word } from "./db";
 
 /**
  * The promises which resolves when {@link db} becomes available.
@@ -130,37 +130,37 @@ export const showTranslations = writable(true);
 
 const uiWords = {
   // UI:
-  번역: "Noun",
-  정의: "Noun",
-  불명: "Noun",
-  사용: "Noun",
-  빈도: "Noun",
-  위: "Noun",
-  한자: "Noun",
-  로마자: "Noun",
-  유의어: "Noun",
-  반의어: "Noun",
-  파생어: "Noun",
-  참고: "Noun",
+  번역: "noun",
+  정의: "noun",
+  불명: "noun",
+  사용: "noun",
+  빈도: "noun",
+  위: "noun",
+  한자: "noun",
+  로마자: "noun",
+  유의어: "noun",
+  반의어: "noun",
+  파생어: "noun",
+  참고: "noun",
 
   // POS:
   //   [...new Set([...DB.dictionary.values()].flat().map(x => x.posKo))].sort().join("\n")
-  감탄사: "Noun",
-  관형사: "Noun",
-  대명사: "Noun",
-  동사: "Noun",
-  명사: "Noun",
-  "보조 동사": "Phrase",
-  "보조 형용사": "Phrase",
-  부사: "Noun",
-  수사: "Noun",
-  약어: "Noun",
-  어미: "Noun",
-  "의존 명사": "Phrase",
-  접사: "Noun",
-  조사: "Noun",
-  형용사: "Noun",
-};
+  감탄사: "noun",
+  관형사: "noun",
+  대명사: "noun",
+  동사: "noun",
+  명사: "noun",
+  "보조 동사": "phrase",
+  "보조 형용사": "phrase",
+  부사: "noun",
+  수사: "noun",
+  약어: "noun",
+  어미: "noun",
+  "의존 명사": "phrase",
+  접사: "noun",
+  조사: "noun",
+  형용사: "noun",
+} as const;
 
 /**
  * IDs of words shown in the UI.
@@ -169,7 +169,7 @@ export const uiWordIds = derived(db, (db) =>
   Object.fromEntries(
     Object.entries(uiWords)
       .map(([uiWord, pos]) => [uiWord, db.wordByPos(uiWord, pos)!]),
-  ) as { readonly [Word in keyof typeof uiWords]: WordData; },
+  ) as { readonly [Word in keyof typeof uiWords]: DefinedWord; },
 );
 
-console.log(uiWordIds)
+console.log(uiWordIds);

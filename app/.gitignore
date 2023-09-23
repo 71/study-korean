@@ -3,4 +3,5 @@ dist/*
 !dist/index.html
 !dist/icon.png
 !dist/manifest.webmanifest
+src/data-proto.d.ts
 src/data-proto.js

@@ -1,174 +1,111 @@
 import * as $protobuf from "protobufjs";
 import Long = require("long");
-/**
- * * Properties of a SentenceData.
- * 	 * @exports ISentenceData
- * 	 * @interface ISentenceData
- * 	 * @property {string|null} [text] SentenceData text
- * 	 * @property {Array.<SentenceData.IToken>|null} [tokens] SentenceData tokens
- */
-export interface ISentenceData {
+/** Properties of a TokenizedText. */
+export interface ITokenizedText {
 
-    /** SentenceData text */
+    /** TokenizedText text */
     text?: (string|null);
 
-    /** SentenceData tokens */
-    tokens?: (SentenceData.IToken[]|null);
+    /** TokenizedText tokens */
+    tokens?: (TokenizedText.IToken[]|null);
 }
 
-/**
- * * Constructs a new SentenceData.
- * 	 * @exports SentenceData
- * 	 * @classdesc Represents a SentenceData.
- * 	 * @implements ISentenceData
- * 	 * @constructor
- * 	 * @param {ISentenceData=} [properties] Properties to set
- */
-export class SentenceData implements ISentenceData {
+/** Represents a TokenizedText. */
+export class TokenizedText implements ITokenizedText {
 
     /**
-     * * Constructs a new SentenceData.
-     * 	 * @exports SentenceData
-     * 	 * @classdesc Represents a SentenceData.
-     * 	 * @implements ISentenceData
-     * 	 * @constructor
-     * 	 * @param {ISentenceData=} [properties] Properties to set
+     * Constructs a new TokenizedText.
+     * @param [properties] Properties to set
      */
-    constructor(properties?: ISentenceData);
+    constructor(properties?: ITokenizedText);
 
-    /**
-     * * SentenceData text.
-     * 	 * @member {string} text
-     * 	 * @memberof SentenceData
-     * 	 * @instance
-     */
+    /** TokenizedText text. */
     public text: string;
 
-    /**
-     * * SentenceData tokens.
-     * 	 * @member {Array.<SentenceData.IToken>} tokens
-     * 	 * @memberof SentenceData
-     * 	 * @instance
-     */
-    public tokens: SentenceData.IToken[];
+    /** TokenizedText tokens. */
+    public tokens: TokenizedText.IToken[];
 
     /**
-     * * Creates a new SentenceData instance using the specified properties.
-     * 	 * @function create
-     * 	 * @memberof SentenceData
-     * 	 * @static
-     * 	 * @param {ISentenceData=} [properties] Properties to set
-     * 	 * @returns {SentenceData} SentenceData instance
+     * Creates a new TokenizedText instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns TokenizedText instance
      */
-    public static create(properties?: ISentenceData): SentenceData;
+    public static create(properties?: ITokenizedText): TokenizedText;
 
     /**
-     * * Encodes the specified SentenceData message. Does not implicitly {@link SentenceData.verify|verify} messages.
-     * 	 * @function encode
-     * 	 * @memberof SentenceData
-     * 	 * @static
-     * 	 * @param {ISentenceData} message SentenceData message or plain object to encode
-     * 	 * @param {$protobuf.Writer} [writer] Writer to encode to
-     * 	 * @returns {$protobuf.Writer} Writer
+     * Encodes the specified TokenizedText message. Does not implicitly {@link TokenizedText.verify|verify} messages.
+     * @param message TokenizedText message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
      */
-    public static encode(message: ISentenceData, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encode(message: ITokenizedText, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * * Encodes the specified SentenceData message, length delimited. Does not implicitly {@link SentenceData.verify|verify} messages.
-     * 	 * @function encodeDelimited
-     * 	 * @memberof SentenceData
-     * 	 * @static
-     * 	 * @param {ISentenceData} message SentenceData message or plain object to encode
-     * 	 * @param {$protobuf.Writer} [writer] Writer to encode to
-     * 	 * @returns {$protobuf.Writer} Writer
+     * Encodes the specified TokenizedText message, length delimited. Does not implicitly {@link TokenizedText.verify|verify} messages.
+     * @param message TokenizedText message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
      */
-    public static encodeDelimited(message: ISentenceData, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encodeDelimited(message: ITokenizedText, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * * Decodes a SentenceData message from the specified reader or buffer.
-     * 	 * @function decode
-     * 	 * @memberof SentenceData
-     * 	 * @static
-     * 	 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * 	 * @param {number} [length] Message length if known beforehand
-     * 	 * @returns {SentenceData} SentenceData
-     * 	 * @throws {Error} If the payload is not a reader or valid buffer
-     * 	 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     * Decodes a TokenizedText message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns TokenizedText
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): SentenceData;
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): TokenizedText;
 
     /**
-     * * Decodes a SentenceData message from the specified reader or buffer, length delimited.
-     * 	 * @function decodeDelimited
-     * 	 * @memberof SentenceData
-     * 	 * @static
-     * 	 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * 	 * @returns {SentenceData} SentenceData
-     * 	 * @throws {Error} If the payload is not a reader or valid buffer
-     * 	 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     * Decodes a TokenizedText message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns TokenizedText
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): SentenceData;
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): TokenizedText;
 
     /**
-     * * Verifies a SentenceData message.
-     * 	 * @function verify
-     * 	 * @memberof SentenceData
-     * 	 * @static
-     * 	 * @param {Object.<string,*>} message Plain object to verify
-     * 	 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     * Verifies a TokenizedText message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
 
     /**
-     * * Creates a SentenceData message from a plain object. Also converts values to their respective internal types.
-     * 	 * @function fromObject
-     * 	 * @memberof SentenceData
-     * 	 * @static
-     * 	 * @param {Object.<string,*>} object Plain object
-     * 	 * @returns {SentenceData} SentenceData
+     * Creates a TokenizedText message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns TokenizedText
      */
-    public static fromObject(object: { [k: string]: any }): SentenceData;
+    public static fromObject(object: { [k: string]: any }): TokenizedText;
 
     /**
-     * * Creates a plain object from a SentenceData message. Also converts values to other types if specified.
-     * 	 * @function toObject
-     * 	 * @memberof SentenceData
-     * 	 * @static
-     * 	 * @param {SentenceData} message SentenceData
-     * 	 * @param {$protobuf.IConversionOptions} [options] Conversion options
-     * 	 * @returns {Object.<string,*>} Plain object
+     * Creates a plain object from a TokenizedText message. Also converts values to other types if specified.
+     * @param message TokenizedText
+     * @param [options] Conversion options
+     * @returns Plain object
      */
-    public static toObject(message: SentenceData, options?: $protobuf.IConversionOptions): { [k: string]: any };
+    public static toObject(message: TokenizedText, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
     /**
-     * * Converts this SentenceData to JSON.
-     * 	 * @function toJSON
-     * 	 * @memberof SentenceData
-     * 	 * @instance
-     * 	 * @returns {Object.<string,*>} JSON object
+     * Converts this TokenizedText to JSON.
+     * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
 
     /**
-     * * Gets the default type url for SentenceData
-     * 	 * @function getTypeUrl
-     * 	 * @memberof SentenceData
-     * 	 * @static
-     * 	 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * 	 * @returns {string} The default type url
+     * Gets the default type url for TokenizedText
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-export namespace SentenceData {
+export namespace TokenizedText {
 
-    /**
-     * * Properties of a Token.
-     * 		 * @memberof SentenceData
-     * 		 * @interface IToken
-     * 		 * @property {string|null} [text] Token text
-     * 		 * @property {number|null} [wordId] Token wordId
-     */
+    /** Properties of a Token. */
     interface IToken {
 
         /** Token text */
@@ -178,502 +115,366 @@ export namespace SentenceData {
         wordId?: (number|null);
     }
 
-    /**
-     * * Constructs a new Token.
-     * 		 * @memberof SentenceData
-     * 		 * @classdesc Represents a Token.
-     * 		 * @implements IToken
-     * 		 * @constructor
-     * 		 * @param {SentenceData.IToken=} [properties] Properties to set
-     */
+    /** Represents a Token. */
     class Token implements IToken {
 
         /**
-         * * Constructs a new Token.
-         * 		 * @memberof SentenceData
-         * 		 * @classdesc Represents a Token.
-         * 		 * @implements IToken
-         * 		 * @constructor
-         * 		 * @param {SentenceData.IToken=} [properties] Properties to set
+         * Constructs a new Token.
+         * @param [properties] Properties to set
          */
-        constructor(properties?: SentenceData.IToken);
+        constructor(properties?: TokenizedText.IToken);
 
-        /**
-         * * Token text.
-         * 		 * @member {string} text
-         * 		 * @memberof SentenceData.Token
-         * 		 * @instance
-         */
+        /** Token text. */
         public text: string;
 
-        /**
-         * * Token wordId.
-         * 		 * @member {number|null|undefined} wordId
-         * 		 * @memberof SentenceData.Token
-         * 		 * @instance
-         */
+        /** Token wordId. */
         public wordId?: (number|null);
 
-        /**
-         * * Token _wordId.
-         * 		 * @member {"wordId"|undefined} _wordId
-         * 		 * @memberof SentenceData.Token
-         * 		 * @instance
-         */
+        /** Token _wordId. */
         public _wordId?: "wordId";
 
         /**
-         * * Creates a new Token instance using the specified properties.
-         * 		 * @function create
-         * 		 * @memberof SentenceData.Token
-         * 		 * @static
-         * 		 * @param {SentenceData.IToken=} [properties] Properties to set
-         * 		 * @returns {SentenceData.Token} Token instance
+         * Creates a new Token instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Token instance
          */
-        public static create(properties?: SentenceData.IToken): SentenceData.Token;
+        public static create(properties?: TokenizedText.IToken): TokenizedText.Token;
 
         /**
-         * * Encodes the specified Token message. Does not implicitly {@link SentenceData.Token.verify|verify} messages.
-         * 		 * @function encode
-         * 		 * @memberof SentenceData.Token
-         * 		 * @static
-         * 		 * @param {SentenceData.IToken} message Token message or plain object to encode
-         * 		 * @param {$protobuf.Writer} [writer] Writer to encode to
-         * 		 * @returns {$protobuf.Writer} Writer
+         * Encodes the specified Token message. Does not implicitly {@link TokenizedText.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
          */
-        public static encode(message: SentenceData.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: TokenizedText.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * * Encodes the specified Token message, length delimited. Does not implicitly {@link SentenceData.Token.verify|verify} messages.
-         * 		 * @function encodeDelimited
-         * 		 * @memberof SentenceData.Token
-         * 		 * @static
-         * 		 * @param {SentenceData.IToken} message Token message or plain object to encode
-         * 		 * @param {$protobuf.Writer} [writer] Writer to encode to
-         * 		 * @returns {$protobuf.Writer} Writer
+         * Encodes the specified Token message, length delimited. Does not implicitly {@link TokenizedText.Token.verify|verify} messages.
+         * @param message Token message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
          */
-        public static encodeDelimited(message: SentenceData.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: TokenizedText.IToken, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * * Decodes a Token message from the specified reader or buffer.
-         * 		 * @function decode
-         * 		 * @memberof SentenceData.Token
-         * 		 * @static
-         * 		 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * 		 * @param {number} [length] Message length if known beforehand
-         * 		 * @returns {SentenceData.Token} Token
-         * 		 * @throws {Error} If the payload is not a reader or valid buffer
-         * 		 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         * Decodes a Token message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): SentenceData.Token;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): TokenizedText.Token;
 
         /**
-         * * Decodes a Token message from the specified reader or buffer, length delimited.
-         * 		 * @function decodeDelimited
-         * 		 * @memberof SentenceData.Token
-         * 		 * @static
-         * 		 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * 		 * @returns {SentenceData.Token} Token
-         * 		 * @throws {Error} If the payload is not a reader or valid buffer
-         * 		 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         * Decodes a Token message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Token
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): SentenceData.Token;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): TokenizedText.Token;
 
         /**
-         * * Verifies a Token message.
-         * 		 * @function verify
-         * 		 * @memberof SentenceData.Token
-         * 		 * @static
-         * 		 * @param {Object.<string,*>} message Plain object to verify
-         * 		 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         * Verifies a Token message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * * Creates a Token message from a plain object. Also converts values to their respective internal types.
-         * 		 * @function fromObject
-         * 		 * @memberof SentenceData.Token
-         * 		 * @static
-         * 		 * @param {Object.<string,*>} object Plain object
-         * 		 * @returns {SentenceData.Token} Token
+         * Creates a Token message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Token
          */
-        public static fromObject(object: { [k: string]: any }): SentenceData.Token;
+        public static fromObject(object: { [k: string]: any }): TokenizedText.Token;
 
         /**
-         * * Creates a plain object from a Token message. Also converts values to other types if specified.
-         * 		 * @function toObject
-         * 		 * @memberof SentenceData.Token
-         * 		 * @static
-         * 		 * @param {SentenceData.Token} message Token
-         * 		 * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * 		 * @returns {Object.<string,*>} Plain object
+         * Creates a plain object from a Token message. Also converts values to other types if specified.
+         * @param message Token
+         * @param [options] Conversion options
+         * @returns Plain object
          */
-        public static toObject(message: SentenceData.Token, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: TokenizedText.Token, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * * Converts this Token to JSON.
-         * 		 * @function toJSON
-         * 		 * @memberof SentenceData.Token
-         * 		 * @instance
-         * 		 * @returns {Object.<string,*>} JSON object
+         * Converts this Token to JSON.
+         * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * * Gets the default type url for Token
-         * 		 * @function getTypeUrl
-         * 		 * @memberof SentenceData.Token
-         * 		 * @static
-         * 		 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * 		 * @returns {string} The default type url
+         * Gets the default type url for Token
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 }
 
-/**
- * * Properties of a WordData.
- * 	 * @exports IWordData
- * 	 * @interface IWordData
- * 	 * @property {number|null} [wordId] WordData wordId
- * 	 * @property {string|null} [text] WordData text
- * 	 * @property {string|null} [pos] WordData pos
- * 	 * @property {string|null} [posKo] WordData posKo
- * 	 * @property {string|null} [posDescr] WordData posDescr
- * 	 * @property {string|null} [lexicalUnit] WordData lexicalUnit
- * 	 * @property {string|null} [origin] WordData origin
- * 	 * @property {string|null} [pronunciation] WordData pronunciation
- * 	 * @property {string|null} [soundUrl] WordData soundUrl
- * 	 * @property {Array.<WordData.IMeaning>|null} [meanings] WordData meanings
- * 	 * @property {Array.<WordData.IRelatedForm>|null} [relatedForms] WordData relatedForms
- * 	 * @property {Array.<number>|null} [exampleIds] WordData exampleIds
- * 	 * @property {number|null} [mostCommon] WordData mostCommon
- */
-export interface IWordData {
+/** Properties of a Word. */
+export interface IWord {
 
-    /** WordData wordId */
-    wordId?: (number|null);
-
-    /** WordData text */
+    /** Word text */
     text?: (string|null);
 
-    /** WordData pos */
-    pos?: (string|null);
+    /** Word noun */
+    noun?: (Word.IDefined|null);
 
-    /** WordData posKo */
-    posKo?: (string|null);
+    /** Word dependentNoun */
+    dependentNoun?: (Word.IDefined|null);
 
-    /** WordData posDescr */
-    posDescr?: (string|null);
+    /** Word pronoun */
+    pronoun?: (Word.IDefined|null);
 
-    /** WordData lexicalUnit */
-    lexicalUnit?: (string|null);
+    /** Word interjection */
+    interjection?: (Word.IDefined|null);
 
-    /** WordData origin */
-    origin?: (string|null);
+    /** Word verb */
+    verb?: (Word.IDefined|null);
 
-    /** WordData pronunciation */
-    pronunciation?: (string|null);
+    /** Word auxVerb */
+    auxVerb?: (Word.IDefined|null);
 
-    /** WordData soundUrl */
-    soundUrl?: (string|null);
+    /** Word auxAdjective */
+    auxAdjective?: (Word.IDefined|null);
 
-    /** WordData meanings */
-    meanings?: (WordData.IMeaning[]|null);
+    /** Word eomi */
+    eomi?: (Word.IDefined|null);
 
-    /** WordData relatedForms */
-    relatedForms?: (WordData.IRelatedForm[]|null);
+    /** Word adjective */
+    adjective?: (Word.IDefined|null);
 
-    /** WordData exampleIds */
-    exampleIds?: (number[]|null);
+    /** Word adverb */
+    adverb?: (Word.IDefined|null);
 
-    /** WordData mostCommon */
+    /** Word josa */
+    josa?: (Word.IDefined|null);
+
+    /** Word determiner */
+    determiner?: (Word.IDefined|null);
+
+    /** Word modifier */
+    modifier?: (Word.IDefined|null);
+
+    /** Word number */
+    number?: (Word.IDefined|null);
+
+    /** Word abbreviation */
+    abbreviation?: (Word.IDefined|null);
+
+    /** Word phrase */
+    phrase?: (Word.IDefined|null);
+
+    /** Word score */
+    score?: (number|null);
+
+    /** Word mostCommon */
     mostCommon?: (number|null);
 }
 
-/**
- * * Constructs a new WordData.
- * 	 * @exports WordData
- * 	 * @classdesc Represents a WordData.
- * 	 * @implements IWordData
- * 	 * @constructor
- * 	 * @param {IWordData=} [properties] Properties to set
- */
-export class WordData implements IWordData {
+/** Represents a Word. */
+export class Word implements IWord {
 
     /**
-     * * Constructs a new WordData.
-     * 	 * @exports WordData
-     * 	 * @classdesc Represents a WordData.
-     * 	 * @implements IWordData
-     * 	 * @constructor
-     * 	 * @param {IWordData=} [properties] Properties to set
+     * Constructs a new Word.
+     * @param [properties] Properties to set
      */
-    constructor(properties?: IWordData);
+    constructor(properties?: IWord);
 
-    /**
-     * * WordData wordId.
-     * 	 * @member {number} wordId
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public wordId: number;
-
-    /**
-     * * WordData text.
-     * 	 * @member {string} text
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
+    /** Word text. */
     public text: string;
 
-    /**
-     * * WordData pos.
-     * 	 * @member {string} pos
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public pos: string;
+    /** Word noun. */
+    public noun?: (Word.IDefined|null);
 
-    /**
-     * * WordData posKo.
-     * 	 * @member {string} posKo
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public posKo: string;
+    /** Word dependentNoun. */
+    public dependentNoun?: (Word.IDefined|null);
 
-    /**
-     * * WordData posDescr.
-     * 	 * @member {string} posDescr
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public posDescr: string;
+    /** Word pronoun. */
+    public pronoun?: (Word.IDefined|null);
 
-    /**
-     * * WordData lexicalUnit.
-     * 	 * @member {string} lexicalUnit
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public lexicalUnit: string;
+    /** Word interjection. */
+    public interjection?: (Word.IDefined|null);
 
-    /**
-     * * WordData origin.
-     * 	 * @member {string|null|undefined} origin
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public origin?: (string|null);
+    /** Word verb. */
+    public verb?: (Word.IDefined|null);
 
-    /**
-     * * WordData pronunciation.
-     * 	 * @member {string|null|undefined} pronunciation
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public pronunciation?: (string|null);
+    /** Word auxVerb. */
+    public auxVerb?: (Word.IDefined|null);
 
-    /**
-     * * WordData soundUrl.
-     * 	 * @member {string|null|undefined} soundUrl
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public soundUrl?: (string|null);
+    /** Word auxAdjective. */
+    public auxAdjective?: (Word.IDefined|null);
 
-    /**
-     * * WordData meanings.
-     * 	 * @member {Array.<WordData.IMeaning>} meanings
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public meanings: WordData.IMeaning[];
+    /** Word eomi. */
+    public eomi?: (Word.IDefined|null);
 
-    /**
-     * * WordData relatedForms.
-     * 	 * @member {Array.<WordData.IRelatedForm>} relatedForms
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public relatedForms: WordData.IRelatedForm[];
+    /** Word adjective. */
+    public adjective?: (Word.IDefined|null);
 
-    /**
-     * * WordData exampleIds.
-     * 	 * @member {Array.<number>} exampleIds
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public exampleIds: number[];
+    /** Word adverb. */
+    public adverb?: (Word.IDefined|null);
 
-    /**
-     * * WordData mostCommon.
-     * 	 * @member {number|null|undefined} mostCommon
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
+    /** Word josa. */
+    public josa?: (Word.IDefined|null);
+
+    /** Word determiner. */
+    public determiner?: (Word.IDefined|null);
+
+    /** Word modifier. */
+    public modifier?: (Word.IDefined|null);
+
+    /** Word number. */
+    public number?: (Word.IDefined|null);
+
+    /** Word abbreviation. */
+    public abbreviation?: (Word.IDefined|null);
+
+    /** Word phrase. */
+    public phrase?: (Word.IDefined|null);
+
+    /** Word score. */
+    public score: number;
+
+    /** Word mostCommon. */
     public mostCommon?: (number|null);
 
-    /**
-     * * WordData _origin.
-     * 	 * @member {"origin"|undefined} _origin
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public _origin?: "origin";
+    /** Word _noun. */
+    public _noun?: "noun";
 
-    /**
-     * * WordData _pronunciation.
-     * 	 * @member {"pronunciation"|undefined} _pronunciation
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public _pronunciation?: "pronunciation";
+    /** Word _dependentNoun. */
+    public _dependentNoun?: "dependentNoun";
 
-    /**
-     * * WordData _soundUrl.
-     * 	 * @member {"soundUrl"|undefined} _soundUrl
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
-    public _soundUrl?: "soundUrl";
+    /** Word _pronoun. */
+    public _pronoun?: "pronoun";
 
-    /**
-     * * WordData _mostCommon.
-     * 	 * @member {"mostCommon"|undefined} _mostCommon
-     * 	 * @memberof WordData
-     * 	 * @instance
-     */
+    /** Word _interjection. */
+    public _interjection?: "interjection";
+
+    /** Word _verb. */
+    public _verb?: "verb";
+
+    /** Word _auxVerb. */
+    public _auxVerb?: "auxVerb";
+
+    /** Word _auxAdjective. */
+    public _auxAdjective?: "auxAdjective";
+
+    /** Word _eomi. */
+    public _eomi?: "eomi";
+
+    /** Word _adjective. */
+    public _adjective?: "adjective";
+
+    /** Word _adverb. */
+    public _adverb?: "adverb";
+
+    /** Word _josa. */
+    public _josa?: "josa";
+
+    /** Word _determiner. */
+    public _determiner?: "determiner";
+
+    /** Word _modifier. */
+    public _modifier?: "modifier";
+
+    /** Word _number. */
+    public _number?: "number";
+
+    /** Word _abbreviation. */
+    public _abbreviation?: "abbreviation";
+
+    /** Word _phrase. */
+    public _phrase?: "phrase";
+
+    /** Word _mostCommon. */
     public _mostCommon?: "mostCommon";
 
     /**
-     * * Creates a new WordData instance using the specified properties.
-     * 	 * @function create
-     * 	 * @memberof WordData
-     * 	 * @static
-     * 	 * @param {IWordData=} [properties] Properties to set
-     * 	 * @returns {WordData} WordData instance
+     * Creates a new Word instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns Word instance
      */
-    public static create(properties?: IWordData): WordData;
+    public static create(properties?: IWord): Word;
 
     /**
-     * * Encodes the specified WordData message. Does not implicitly {@link WordData.verify|verify} messages.
-     * 	 * @function encode
-     * 	 * @memberof WordData
-     * 	 * @static
-     * 	 * @param {IWordData} message WordData message or plain object to encode
-     * 	 * @param {$protobuf.Writer} [writer] Writer to encode to
-     * 	 * @returns {$protobuf.Writer} Writer
+     * Encodes the specified Word message. Does not implicitly {@link Word.verify|verify} messages.
+     * @param message Word message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
      */
-    public static encode(message: IWordData, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encode(message: IWord, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * * Encodes the specified WordData message, length delimited. Does not implicitly {@link WordData.verify|verify} messages.
-     * 	 * @function encodeDelimited
-     * 	 * @memberof WordData
-     * 	 * @static
-     * 	 * @param {IWordData} message WordData message or plain object to encode
-     * 	 * @param {$protobuf.Writer} [writer] Writer to encode to
-     * 	 * @returns {$protobuf.Writer} Writer
+     * Encodes the specified Word message, length delimited. Does not implicitly {@link Word.verify|verify} messages.
+     * @param message Word message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
      */
-    public static encodeDelimited(message: IWordData, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encodeDelimited(message: IWord, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * * Decodes a WordData message from the specified reader or buffer.
-     * 	 * @function decode
-     * 	 * @memberof WordData
-     * 	 * @static
-     * 	 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * 	 * @param {number} [length] Message length if known beforehand
-     * 	 * @returns {WordData} WordData
-     * 	 * @throws {Error} If the payload is not a reader or valid buffer
-     * 	 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     * Decodes a Word message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns Word
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): WordData;
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Word;
 
     /**
-     * * Decodes a WordData message from the specified reader or buffer, length delimited.
-     * 	 * @function decodeDelimited
-     * 	 * @memberof WordData
-     * 	 * @static
-     * 	 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * 	 * @returns {WordData} WordData
-     * 	 * @throws {Error} If the payload is not a reader or valid buffer
-     * 	 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     * Decodes a Word message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns Word
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): WordData;
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): Word;
 
     /**
-     * * Verifies a WordData message.
-     * 	 * @function verify
-     * 	 * @memberof WordData
-     * 	 * @static
-     * 	 * @param {Object.<string,*>} message Plain object to verify
-     * 	 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     * Verifies a Word message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
 
     /**
-     * * Creates a WordData message from a plain object. Also converts values to their respective internal types.
-     * 	 * @function fromObject
-     * 	 * @memberof WordData
-     * 	 * @static
-     * 	 * @param {Object.<string,*>} object Plain object
-     * 	 * @returns {WordData} WordData
+     * Creates a Word message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns Word
      */
-    public static fromObject(object: { [k: string]: any }): WordData;
+    public static fromObject(object: { [k: string]: any }): Word;
 
     /**
-     * * Creates a plain object from a WordData message. Also converts values to other types if specified.
-     * 	 * @function toObject
-     * 	 * @memberof WordData
-     * 	 * @static
-     * 	 * @param {WordData} message WordData
-     * 	 * @param {$protobuf.IConversionOptions} [options] Conversion options
-     * 	 * @returns {Object.<string,*>} Plain object
+     * Creates a plain object from a Word message. Also converts values to other types if specified.
+     * @param message Word
+     * @param [options] Conversion options
+     * @returns Plain object
      */
-    public static toObject(message: WordData, options?: $protobuf.IConversionOptions): { [k: string]: any };
+    public static toObject(message: Word, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
     /**
-     * * Converts this WordData to JSON.
-     * 	 * @function toJSON
-     * 	 * @memberof WordData
-     * 	 * @instance
-     * 	 * @returns {Object.<string,*>} JSON object
+     * Converts this Word to JSON.
+     * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
 
     /**
-     * * Gets the default type url for WordData
-     * 	 * @function getTypeUrl
-     * 	 * @memberof WordData
-     * 	 * @static
-     * 	 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * 	 * @returns {string} The default type url
+     * Gets the default type url for Word
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-export namespace WordData {
+export namespace Word {
 
-    /**
-     * * Properties of a Meaning.
-     * 		 * @memberof WordData
-     * 		 * @interface IMeaning
-     * 		 * @property {ISentenceData|null} [definition] Meaning definition
-     * 		 * @property {string|null} [translation] Meaning translation
-     * 		 * @property {string|null} [definitionTranslation] Meaning definitionTranslation
-     * 		 * @property {Array.<WordData.Meaning.IWordRef>|null} [related] Meaning related
-     * 		 * @property {Array.<WordData.Meaning.IWordRef>|null} [originalForms] Meaning originalForms
-     * 		 * @property {Array.<WordData.Meaning.IWordRef>|null} [synonyms] Meaning synonyms
-     * 		 * @property {Array.<WordData.Meaning.IWordRef>|null} [antonyms] Meaning antonyms
-     * 		 * @property {Array.<string>|null} [abbreviations] Meaning abbreviations
-     */
+    /** Properties of a Meaning. */
     interface IMeaning {
 
         /** Meaning definition */
-        definition?: (ISentenceData|null);
+        definition?: (ITokenizedText|null);
 
         /** Meaning translation */
         translation?: (string|null);
@@ -682,238 +483,141 @@ export namespace WordData {
         definitionTranslation?: (string|null);
 
         /** Meaning related */
-        related?: (WordData.Meaning.IWordRef[]|null);
+        related?: (Word.Meaning.IWordRef[]|null);
 
         /** Meaning originalForms */
-        originalForms?: (WordData.Meaning.IWordRef[]|null);
+        originalForms?: (Word.Meaning.IWordRef[]|null);
 
         /** Meaning synonyms */
-        synonyms?: (WordData.Meaning.IWordRef[]|null);
+        synonyms?: (Word.Meaning.IWordRef[]|null);
 
         /** Meaning antonyms */
-        antonyms?: (WordData.Meaning.IWordRef[]|null);
+        antonyms?: (Word.Meaning.IWordRef[]|null);
+
+        /** Meaning honorifics */
+        honorifics?: (Word.Meaning.IWordRef[]|null);
 
         /** Meaning abbreviations */
         abbreviations?: (string[]|null);
     }
 
-    /**
-     * * Constructs a new Meaning.
-     * 		 * @memberof WordData
-     * 		 * @classdesc Represents a Meaning.
-     * 		 * @implements IMeaning
-     * 		 * @constructor
-     * 		 * @param {WordData.IMeaning=} [properties] Properties to set
-     */
+    /** Represents a Meaning. */
     class Meaning implements IMeaning {
 
         /**
-         * * Constructs a new Meaning.
-         * 		 * @memberof WordData
-         * 		 * @classdesc Represents a Meaning.
-         * 		 * @implements IMeaning
-         * 		 * @constructor
-         * 		 * @param {WordData.IMeaning=} [properties] Properties to set
+         * Constructs a new Meaning.
+         * @param [properties] Properties to set
          */
-        constructor(properties?: WordData.IMeaning);
+        constructor(properties?: Word.IMeaning);
 
-        /**
-         * * Meaning definition.
-         * 		 * @member {ISentenceData|null|undefined} definition
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
-         */
-        public definition?: (ISentenceData|null);
+        /** Meaning definition. */
+        public definition?: (ITokenizedText|null);
 
-        /**
-         * * Meaning translation.
-         * 		 * @member {string|null|undefined} translation
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
-         */
-        public translation?: (string|null);
+        /** Meaning translation. */
+        public translation: string;
 
-        /**
-         * * Meaning definitionTranslation.
-         * 		 * @member {string|null|undefined} definitionTranslation
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
-         */
-        public definitionTranslation?: (string|null);
+        /** Meaning definitionTranslation. */
+        public definitionTranslation: string;
 
-        /**
-         * * Meaning related.
-         * 		 * @member {Array.<WordData.Meaning.IWordRef>} related
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
-         */
-        public related: WordData.Meaning.IWordRef[];
+        /** Meaning related. */
+        public related: Word.Meaning.IWordRef[];
 
-        /**
-         * * Meaning originalForms.
-         * 		 * @member {Array.<WordData.Meaning.IWordRef>} originalForms
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
-         */
-        public originalForms: WordData.Meaning.IWordRef[];
+        /** Meaning originalForms. */
+        public originalForms: Word.Meaning.IWordRef[];
 
-        /**
-         * * Meaning synonyms.
-         * 		 * @member {Array.<WordData.Meaning.IWordRef>} synonyms
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
-         */
-        public synonyms: WordData.Meaning.IWordRef[];
+        /** Meaning synonyms. */
+        public synonyms: Word.Meaning.IWordRef[];
 
-        /**
-         * * Meaning antonyms.
-         * 		 * @member {Array.<WordData.Meaning.IWordRef>} antonyms
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
-         */
-        public antonyms: WordData.Meaning.IWordRef[];
+        /** Meaning antonyms. */
+        public antonyms: Word.Meaning.IWordRef[];
 
-        /**
-         * * Meaning abbreviations.
-         * 		 * @member {Array.<string>} abbreviations
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
-         */
+        /** Meaning honorifics. */
+        public honorifics: Word.Meaning.IWordRef[];
+
+        /** Meaning abbreviations. */
         public abbreviations: string[];
 
         /**
-         * * Meaning _translation.
-         * 		 * @member {"translation"|undefined} _translation
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
+         * Creates a new Meaning instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Meaning instance
          */
-        public _translation?: "translation";
+        public static create(properties?: Word.IMeaning): Word.Meaning;
 
         /**
-         * * Meaning _definitionTranslation.
-         * 		 * @member {"definitionTranslation"|undefined} _definitionTranslation
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
+         * Encodes the specified Meaning message. Does not implicitly {@link Word.Meaning.verify|verify} messages.
+         * @param message Meaning message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
          */
-        public _definitionTranslation?: "definitionTranslation";
+        public static encode(message: Word.IMeaning, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * * Creates a new Meaning instance using the specified properties.
-         * 		 * @function create
-         * 		 * @memberof WordData.Meaning
-         * 		 * @static
-         * 		 * @param {WordData.IMeaning=} [properties] Properties to set
-         * 		 * @returns {WordData.Meaning} Meaning instance
+         * Encodes the specified Meaning message, length delimited. Does not implicitly {@link Word.Meaning.verify|verify} messages.
+         * @param message Meaning message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
          */
-        public static create(properties?: WordData.IMeaning): WordData.Meaning;
+        public static encodeDelimited(message: Word.IMeaning, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * * Encodes the specified Meaning message. Does not implicitly {@link WordData.Meaning.verify|verify} messages.
-         * 		 * @function encode
-         * 		 * @memberof WordData.Meaning
-         * 		 * @static
-         * 		 * @param {WordData.IMeaning} message Meaning message or plain object to encode
-         * 		 * @param {$protobuf.Writer} [writer] Writer to encode to
-         * 		 * @returns {$protobuf.Writer} Writer
+         * Decodes a Meaning message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Meaning
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static encode(message: WordData.IMeaning, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Word.Meaning;
 
         /**
-         * * Encodes the specified Meaning message, length delimited. Does not implicitly {@link WordData.Meaning.verify|verify} messages.
-         * 		 * @function encodeDelimited
-         * 		 * @memberof WordData.Meaning
-         * 		 * @static
-         * 		 * @param {WordData.IMeaning} message Meaning message or plain object to encode
-         * 		 * @param {$protobuf.Writer} [writer] Writer to encode to
-         * 		 * @returns {$protobuf.Writer} Writer
+         * Decodes a Meaning message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Meaning
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static encodeDelimited(message: WordData.IMeaning, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): Word.Meaning;
 
         /**
-         * * Decodes a Meaning message from the specified reader or buffer.
-         * 		 * @function decode
-         * 		 * @memberof WordData.Meaning
-         * 		 * @static
-         * 		 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * 		 * @param {number} [length] Message length if known beforehand
-         * 		 * @returns {WordData.Meaning} Meaning
-         * 		 * @throws {Error} If the payload is not a reader or valid buffer
-         * 		 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): WordData.Meaning;
-
-        /**
-         * * Decodes a Meaning message from the specified reader or buffer, length delimited.
-         * 		 * @function decodeDelimited
-         * 		 * @memberof WordData.Meaning
-         * 		 * @static
-         * 		 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * 		 * @returns {WordData.Meaning} Meaning
-         * 		 * @throws {Error} If the payload is not a reader or valid buffer
-         * 		 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): WordData.Meaning;
-
-        /**
-         * * Verifies a Meaning message.
-         * 		 * @function verify
-         * 		 * @memberof WordData.Meaning
-         * 		 * @static
-         * 		 * @param {Object.<string,*>} message Plain object to verify
-         * 		 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         * Verifies a Meaning message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * * Creates a Meaning message from a plain object. Also converts values to their respective internal types.
-         * 		 * @function fromObject
-         * 		 * @memberof WordData.Meaning
-         * 		 * @static
-         * 		 * @param {Object.<string,*>} object Plain object
-         * 		 * @returns {WordData.Meaning} Meaning
+         * Creates a Meaning message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Meaning
          */
-        public static fromObject(object: { [k: string]: any }): WordData.Meaning;
+        public static fromObject(object: { [k: string]: any }): Word.Meaning;
 
         /**
-         * * Creates a plain object from a Meaning message. Also converts values to other types if specified.
-         * 		 * @function toObject
-         * 		 * @memberof WordData.Meaning
-         * 		 * @static
-         * 		 * @param {WordData.Meaning} message Meaning
-         * 		 * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * 		 * @returns {Object.<string,*>} Plain object
+         * Creates a plain object from a Meaning message. Also converts values to other types if specified.
+         * @param message Meaning
+         * @param [options] Conversion options
+         * @returns Plain object
          */
-        public static toObject(message: WordData.Meaning, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: Word.Meaning, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * * Converts this Meaning to JSON.
-         * 		 * @function toJSON
-         * 		 * @memberof WordData.Meaning
-         * 		 * @instance
-         * 		 * @returns {Object.<string,*>} JSON object
+         * Converts this Meaning to JSON.
+         * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * * Gets the default type url for Meaning
-         * 		 * @function getTypeUrl
-         * 		 * @memberof WordData.Meaning
-         * 		 * @static
-         * 		 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * 		 * @returns {string} The default type url
+         * Gets the default type url for Meaning
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     namespace Meaning {
 
-        /**
-         * * Properties of a WordRef.
-         * 			 * @memberof WordData.Meaning
-         * 			 * @interface IWordRef
-         * 			 * @property {string|null} [text] WordRef text
-         * 			 * @property {Array.<number>|null} [wordIds] WordRef wordIds
-         */
+        /** Properties of a WordRef. */
         interface IWordRef {
 
             /** WordRef text */
@@ -923,159 +627,101 @@ export namespace WordData {
             wordIds?: (number[]|null);
         }
 
-        /**
-         * * Constructs a new WordRef.
-         * 			 * @memberof WordData.Meaning
-         * 			 * @classdesc Represents a WordRef.
-         * 			 * @implements IWordRef
-         * 			 * @constructor
-         * 			 * @param {WordData.Meaning.IWordRef=} [properties] Properties to set
-         */
+        /** Represents a WordRef. */
         class WordRef implements IWordRef {
 
             /**
-             * * Constructs a new WordRef.
-             * 			 * @memberof WordData.Meaning
-             * 			 * @classdesc Represents a WordRef.
-             * 			 * @implements IWordRef
-             * 			 * @constructor
-             * 			 * @param {WordData.Meaning.IWordRef=} [properties] Properties to set
+             * Constructs a new WordRef.
+             * @param [properties] Properties to set
              */
-            constructor(properties?: WordData.Meaning.IWordRef);
+            constructor(properties?: Word.Meaning.IWordRef);
 
-            /**
-             * * WordRef text.
-             * 			 * @member {string} text
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @instance
-             */
+            /** WordRef text. */
             public text: string;
 
-            /**
-             * * WordRef wordIds.
-             * 			 * @member {Array.<number>} wordIds
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @instance
-             */
+            /** WordRef wordIds. */
             public wordIds: number[];
 
             /**
-             * * Creates a new WordRef instance using the specified properties.
-             * 			 * @function create
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @static
-             * 			 * @param {WordData.Meaning.IWordRef=} [properties] Properties to set
-             * 			 * @returns {WordData.Meaning.WordRef} WordRef instance
+             * Creates a new WordRef instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns WordRef instance
              */
-            public static create(properties?: WordData.Meaning.IWordRef): WordData.Meaning.WordRef;
+            public static create(properties?: Word.Meaning.IWordRef): Word.Meaning.WordRef;
 
             /**
-             * * Encodes the specified WordRef message. Does not implicitly {@link WordData.Meaning.WordRef.verify|verify} messages.
-             * 			 * @function encode
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @static
-             * 			 * @param {WordData.Meaning.IWordRef} message WordRef message or plain object to encode
-             * 			 * @param {$protobuf.Writer} [writer] Writer to encode to
-             * 			 * @returns {$protobuf.Writer} Writer
+             * Encodes the specified WordRef message. Does not implicitly {@link Word.Meaning.WordRef.verify|verify} messages.
+             * @param message WordRef message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
              */
-            public static encode(message: WordData.Meaning.IWordRef, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encode(message: Word.Meaning.IWordRef, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * * Encodes the specified WordRef message, length delimited. Does not implicitly {@link WordData.Meaning.WordRef.verify|verify} messages.
-             * 			 * @function encodeDelimited
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @static
-             * 			 * @param {WordData.Meaning.IWordRef} message WordRef message or plain object to encode
-             * 			 * @param {$protobuf.Writer} [writer] Writer to encode to
-             * 			 * @returns {$protobuf.Writer} Writer
+             * Encodes the specified WordRef message, length delimited. Does not implicitly {@link Word.Meaning.WordRef.verify|verify} messages.
+             * @param message WordRef message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
              */
-            public static encodeDelimited(message: WordData.Meaning.IWordRef, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: Word.Meaning.IWordRef, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * * Decodes a WordRef message from the specified reader or buffer.
-             * 			 * @function decode
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @static
-             * 			 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * 			 * @param {number} [length] Message length if known beforehand
-             * 			 * @returns {WordData.Meaning.WordRef} WordRef
-             * 			 * @throws {Error} If the payload is not a reader or valid buffer
-             * 			 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             * Decodes a WordRef message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns WordRef
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): WordData.Meaning.WordRef;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Word.Meaning.WordRef;
 
             /**
-             * * Decodes a WordRef message from the specified reader or buffer, length delimited.
-             * 			 * @function decodeDelimited
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @static
-             * 			 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * 			 * @returns {WordData.Meaning.WordRef} WordRef
-             * 			 * @throws {Error} If the payload is not a reader or valid buffer
-             * 			 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             * Decodes a WordRef message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns WordRef
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): WordData.Meaning.WordRef;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): Word.Meaning.WordRef;
 
             /**
-             * * Verifies a WordRef message.
-             * 			 * @function verify
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @static
-             * 			 * @param {Object.<string,*>} message Plain object to verify
-             * 			 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             * Verifies a WordRef message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
              */
             public static verify(message: { [k: string]: any }): (string|null);
 
             /**
-             * * Creates a WordRef message from a plain object. Also converts values to their respective internal types.
-             * 			 * @function fromObject
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @static
-             * 			 * @param {Object.<string,*>} object Plain object
-             * 			 * @returns {WordData.Meaning.WordRef} WordRef
+             * Creates a WordRef message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns WordRef
              */
-            public static fromObject(object: { [k: string]: any }): WordData.Meaning.WordRef;
+            public static fromObject(object: { [k: string]: any }): Word.Meaning.WordRef;
 
             /**
-             * * Creates a plain object from a WordRef message. Also converts values to other types if specified.
-             * 			 * @function toObject
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @static
-             * 			 * @param {WordData.Meaning.WordRef} message WordRef
-             * 			 * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * 			 * @returns {Object.<string,*>} Plain object
+             * Creates a plain object from a WordRef message. Also converts values to other types if specified.
+             * @param message WordRef
+             * @param [options] Conversion options
+             * @returns Plain object
              */
-            public static toObject(message: WordData.Meaning.WordRef, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static toObject(message: Word.Meaning.WordRef, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
             /**
-             * * Converts this WordRef to JSON.
-             * 			 * @function toJSON
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @instance
-             * 			 * @returns {Object.<string,*>} JSON object
+             * Converts this WordRef to JSON.
+             * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
 
             /**
-             * * Gets the default type url for WordRef
-             * 			 * @function getTypeUrl
-             * 			 * @memberof WordData.Meaning.WordRef
-             * 			 * @static
-             * 			 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * 			 * @returns {string} The default type url
+             * Gets the default type url for WordRef
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
              */
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
     }
 
-    /**
-     * * Properties of a RelatedForm.
-     * 		 * @memberof WordData
-     * 		 * @interface IRelatedForm
-     * 		 * @property {string|null} [text] RelatedForm text
-     * 		 * @property {number|null} [verbForm] RelatedForm verbForm
-     * 		 * @property {number|null} [nounForm] RelatedForm nounForm
-     */
+    /** Properties of a RelatedForm. */
     interface IRelatedForm {
 
         /** RelatedForm text */
@@ -1088,539 +734,622 @@ export namespace WordData {
         nounForm?: (number|null);
     }
 
-    /**
-     * * Constructs a new RelatedForm.
-     * 		 * @memberof WordData
-     * 		 * @classdesc Represents a RelatedForm.
-     * 		 * @implements IRelatedForm
-     * 		 * @constructor
-     * 		 * @param {WordData.IRelatedForm=} [properties] Properties to set
-     */
+    /** Represents a RelatedForm. */
     class RelatedForm implements IRelatedForm {
 
         /**
-         * * Constructs a new RelatedForm.
-         * 		 * @memberof WordData
-         * 		 * @classdesc Represents a RelatedForm.
-         * 		 * @implements IRelatedForm
-         * 		 * @constructor
-         * 		 * @param {WordData.IRelatedForm=} [properties] Properties to set
+         * Constructs a new RelatedForm.
+         * @param [properties] Properties to set
          */
-        constructor(properties?: WordData.IRelatedForm);
+        constructor(properties?: Word.IRelatedForm);
 
-        /**
-         * * RelatedForm text.
-         * 		 * @member {string} text
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @instance
-         */
+        /** RelatedForm text. */
         public text: string;
 
-        /**
-         * * RelatedForm verbForm.
-         * 		 * @member {number|null|undefined} verbForm
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @instance
-         */
+        /** RelatedForm verbForm. */
         public verbForm?: (number|null);
 
-        /**
-         * * RelatedForm nounForm.
-         * 		 * @member {number|null|undefined} nounForm
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @instance
-         */
+        /** RelatedForm nounForm. */
         public nounForm?: (number|null);
 
-        /**
-         * * RelatedForm id.
-         * 		 * @member {"verbForm"|"nounForm"|undefined} id
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @instance
-         */
+        /** RelatedForm id. */
         public id?: ("verbForm"|"nounForm");
 
         /**
-         * * Creates a new RelatedForm instance using the specified properties.
-         * 		 * @function create
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @static
-         * 		 * @param {WordData.IRelatedForm=} [properties] Properties to set
-         * 		 * @returns {WordData.RelatedForm} RelatedForm instance
+         * Creates a new RelatedForm instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns RelatedForm instance
          */
-        public static create(properties?: WordData.IRelatedForm): WordData.RelatedForm;
+        public static create(properties?: Word.IRelatedForm): Word.RelatedForm;
 
         /**
-         * * Encodes the specified RelatedForm message. Does not implicitly {@link WordData.RelatedForm.verify|verify} messages.
-         * 		 * @function encode
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @static
-         * 		 * @param {WordData.IRelatedForm} message RelatedForm message or plain object to encode
-         * 		 * @param {$protobuf.Writer} [writer] Writer to encode to
-         * 		 * @returns {$protobuf.Writer} Writer
+         * Encodes the specified RelatedForm message. Does not implicitly {@link Word.RelatedForm.verify|verify} messages.
+         * @param message RelatedForm message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
          */
-        public static encode(message: WordData.IRelatedForm, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: Word.IRelatedForm, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * * Encodes the specified RelatedForm message, length delimited. Does not implicitly {@link WordData.RelatedForm.verify|verify} messages.
-         * 		 * @function encodeDelimited
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @static
-         * 		 * @param {WordData.IRelatedForm} message RelatedForm message or plain object to encode
-         * 		 * @param {$protobuf.Writer} [writer] Writer to encode to
-         * 		 * @returns {$protobuf.Writer} Writer
+         * Encodes the specified RelatedForm message, length delimited. Does not implicitly {@link Word.RelatedForm.verify|verify} messages.
+         * @param message RelatedForm message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
          */
-        public static encodeDelimited(message: WordData.IRelatedForm, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: Word.IRelatedForm, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * * Decodes a RelatedForm message from the specified reader or buffer.
-         * 		 * @function decode
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @static
-         * 		 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * 		 * @param {number} [length] Message length if known beforehand
-         * 		 * @returns {WordData.RelatedForm} RelatedForm
-         * 		 * @throws {Error} If the payload is not a reader or valid buffer
-         * 		 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         * Decodes a RelatedForm message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns RelatedForm
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): WordData.RelatedForm;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Word.RelatedForm;
 
         /**
-         * * Decodes a RelatedForm message from the specified reader or buffer, length delimited.
-         * 		 * @function decodeDelimited
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @static
-         * 		 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * 		 * @returns {WordData.RelatedForm} RelatedForm
-         * 		 * @throws {Error} If the payload is not a reader or valid buffer
-         * 		 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         * Decodes a RelatedForm message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns RelatedForm
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): WordData.RelatedForm;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): Word.RelatedForm;
 
         /**
-         * * Verifies a RelatedForm message.
-         * 		 * @function verify
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @static
-         * 		 * @param {Object.<string,*>} message Plain object to verify
-         * 		 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         * Verifies a RelatedForm message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * * Creates a RelatedForm message from a plain object. Also converts values to their respective internal types.
-         * 		 * @function fromObject
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @static
-         * 		 * @param {Object.<string,*>} object Plain object
-         * 		 * @returns {WordData.RelatedForm} RelatedForm
+         * Creates a RelatedForm message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns RelatedForm
          */
-        public static fromObject(object: { [k: string]: any }): WordData.RelatedForm;
+        public static fromObject(object: { [k: string]: any }): Word.RelatedForm;
 
         /**
-         * * Creates a plain object from a RelatedForm message. Also converts values to other types if specified.
-         * 		 * @function toObject
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @static
-         * 		 * @param {WordData.RelatedForm} message RelatedForm
-         * 		 * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * 		 * @returns {Object.<string,*>} Plain object
+         * Creates a plain object from a RelatedForm message. Also converts values to other types if specified.
+         * @param message RelatedForm
+         * @param [options] Conversion options
+         * @returns Plain object
          */
-        public static toObject(message: WordData.RelatedForm, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: Word.RelatedForm, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * * Converts this RelatedForm to JSON.
-         * 		 * @function toJSON
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @instance
-         * 		 * @returns {Object.<string,*>} JSON object
+         * Converts this RelatedForm to JSON.
+         * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * * Gets the default type url for RelatedForm
-         * 		 * @function getTypeUrl
-         * 		 * @memberof WordData.RelatedForm
-         * 		 * @static
-         * 		 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * 		 * @returns {string} The default type url
+         * Gets the default type url for RelatedForm
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a Defined. */
+    interface IDefined {
+
+        /** Defined wordId */
+        wordId?: (number|null);
+
+        /** Defined text */
+        text?: (string|null);
+
+        /** Defined pos */
+        pos?: (string|null);
+
+        /** Defined lexicalUnit */
+        lexicalUnit?: (string|null);
+
+        /** Defined origin */
+        origin?: (string|null);
+
+        /** Defined pronunciation */
+        pronunciation?: (string|null);
+
+        /** Defined soundUrl */
+        soundUrl?: (string|null);
+
+        /** Defined meanings */
+        meanings?: (Word.IMeaning[]|null);
+
+        /** Defined relatedForms */
+        relatedForms?: (Word.IRelatedForm[]|null);
+
+        /** Defined exampleIds */
+        exampleIds?: (number[]|null);
+
+        /** Defined appearsInDefinitionOf */
+        appearsInDefinitionOf?: (number[]|null);
+    }
+
+    /** Represents a Defined. */
+    class Defined implements IDefined {
+
+        /**
+         * Constructs a new Defined.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: Word.IDefined);
+
+        /** Defined wordId. */
+        public wordId: number;
+
+        /** Defined text. */
+        public text: string;
+
+        /** Defined pos. */
+        public pos: string;
+
+        /** Defined lexicalUnit. */
+        public lexicalUnit: string;
+
+        /** Defined origin. */
+        public origin: string;
+
+        /** Defined pronunciation. */
+        public pronunciation: string;
+
+        /** Defined soundUrl. */
+        public soundUrl: string;
+
+        /** Defined meanings. */
+        public meanings: Word.IMeaning[];
+
+        /** Defined relatedForms. */
+        public relatedForms: Word.IRelatedForm[];
+
+        /** Defined exampleIds. */
+        public exampleIds: number[];
+
+        /** Defined appearsInDefinitionOf. */
+        public appearsInDefinitionOf: number[];
+
+        /**
+         * Creates a new Defined instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Defined instance
+         */
+        public static create(properties?: Word.IDefined): Word.Defined;
+
+        /**
+         * Encodes the specified Defined message. Does not implicitly {@link Word.Defined.verify|verify} messages.
+         * @param message Defined message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: Word.IDefined, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Defined message, length delimited. Does not implicitly {@link Word.Defined.verify|verify} messages.
+         * @param message Defined message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: Word.IDefined, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Defined message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Defined
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Word.Defined;
+
+        /**
+         * Decodes a Defined message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Defined
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): Word.Defined;
+
+        /**
+         * Verifies a Defined message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Defined message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Defined
+         */
+        public static fromObject(object: { [k: string]: any }): Word.Defined;
+
+        /**
+         * Creates a plain object from a Defined message. Also converts values to other types if specified.
+         * @param message Defined
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: Word.Defined, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Defined to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Defined
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 }
 
-/**
- * * Properties of an ExampleData.
- * 	 * @exports IExampleData
- * 	 * @interface IExampleData
- * 	 * @property {number|null} [exampleId] ExampleData exampleId
- * 	 * @property {ISentenceData|null} [koSentence] ExampleData koSentence
- * 	 * @property {string|null} [enTranslation] ExampleData enTranslation
- * 	 * @property {string|null} [enTranslationAlt] ExampleData enTranslationAlt
- * 	 * @property {string|null} [notes] ExampleData notes
- * 	 * @property {number|null} [soundId] ExampleData soundId
- */
-export interface IExampleData {
+/** Properties of an Example. */
+export interface IExample {
 
-    /** ExampleData exampleId */
+    /** Example exampleId */
     exampleId?: (number|null);
 
-    /** ExampleData koSentence */
-    koSentence?: (ISentenceData|null);
+    /** Example koSentence */
+    koSentence?: (ITokenizedText|null);
 
-    /** ExampleData enTranslation */
+    /** Example enTranslation */
     enTranslation?: (string|null);
 
-    /** ExampleData enTranslationAlt */
+    /** Example enTranslationAlt */
     enTranslationAlt?: (string|null);
 
-    /** ExampleData notes */
+    /** Example notes */
     notes?: (string|null);
 
-    /** ExampleData soundId */
+    /** Example soundId */
     soundId?: (number|null);
 }
 
-/**
- * * Constructs a new ExampleData.
- * 	 * @exports ExampleData
- * 	 * @classdesc Represents an ExampleData.
- * 	 * @implements IExampleData
- * 	 * @constructor
- * 	 * @param {IExampleData=} [properties] Properties to set
- */
-export class ExampleData implements IExampleData {
+/** Represents an Example. */
+export class Example implements IExample {
 
     /**
-     * * Constructs a new ExampleData.
-     * 	 * @exports ExampleData
-     * 	 * @classdesc Represents an ExampleData.
-     * 	 * @implements IExampleData
-     * 	 * @constructor
-     * 	 * @param {IExampleData=} [properties] Properties to set
+     * Constructs a new Example.
+     * @param [properties] Properties to set
      */
-    constructor(properties?: IExampleData);
+    constructor(properties?: IExample);
 
-    /**
-     * * ExampleData exampleId.
-     * 	 * @member {number} exampleId
-     * 	 * @memberof ExampleData
-     * 	 * @instance
-     */
+    /** Example exampleId. */
     public exampleId: number;
 
-    /**
-     * * ExampleData koSentence.
-     * 	 * @member {ISentenceData|null|undefined} koSentence
-     * 	 * @memberof ExampleData
-     * 	 * @instance
-     */
-    public koSentence?: (ISentenceData|null);
+    /** Example koSentence. */
+    public koSentence?: (ITokenizedText|null);
 
-    /**
-     * * ExampleData enTranslation.
-     * 	 * @member {string} enTranslation
-     * 	 * @memberof ExampleData
-     * 	 * @instance
-     */
+    /** Example enTranslation. */
     public enTranslation: string;
 
-    /**
-     * * ExampleData enTranslationAlt.
-     * 	 * @member {string} enTranslationAlt
-     * 	 * @memberof ExampleData
-     * 	 * @instance
-     */
+    /** Example enTranslationAlt. */
     public enTranslationAlt: string;
 
-    /**
-     * * ExampleData notes.
-     * 	 * @member {string} notes
-     * 	 * @memberof ExampleData
-     * 	 * @instance
-     */
+    /** Example notes. */
     public notes: string;
 
-    /**
-     * * ExampleData soundId.
-     * 	 * @member {number|null|undefined} soundId
-     * 	 * @memberof ExampleData
-     * 	 * @instance
-     */
+    /** Example soundId. */
     public soundId?: (number|null);
 
-    /**
-     * * ExampleData _soundId.
-     * 	 * @member {"soundId"|undefined} _soundId
-     * 	 * @memberof ExampleData
-     * 	 * @instance
-     */
+    /** Example _soundId. */
     public _soundId?: "soundId";
 
     /**
-     * * Creates a new ExampleData instance using the specified properties.
-     * 	 * @function create
-     * 	 * @memberof ExampleData
-     * 	 * @static
-     * 	 * @param {IExampleData=} [properties] Properties to set
-     * 	 * @returns {ExampleData} ExampleData instance
+     * Creates a new Example instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns Example instance
      */
-    public static create(properties?: IExampleData): ExampleData;
+    public static create(properties?: IExample): Example;
 
     /**
-     * * Encodes the specified ExampleData message. Does not implicitly {@link ExampleData.verify|verify} messages.
-     * 	 * @function encode
-     * 	 * @memberof ExampleData
-     * 	 * @static
-     * 	 * @param {IExampleData} message ExampleData message or plain object to encode
-     * 	 * @param {$protobuf.Writer} [writer] Writer to encode to
-     * 	 * @returns {$protobuf.Writer} Writer
+     * Encodes the specified Example message. Does not implicitly {@link Example.verify|verify} messages.
+     * @param message Example message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
      */
-    public static encode(message: IExampleData, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encode(message: IExample, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * * Encodes the specified ExampleData message, length delimited. Does not implicitly {@link ExampleData.verify|verify} messages.
-     * 	 * @function encodeDelimited
-     * 	 * @memberof ExampleData
-     * 	 * @static
-     * 	 * @param {IExampleData} message ExampleData message or plain object to encode
-     * 	 * @param {$protobuf.Writer} [writer] Writer to encode to
-     * 	 * @returns {$protobuf.Writer} Writer
+     * Encodes the specified Example message, length delimited. Does not implicitly {@link Example.verify|verify} messages.
+     * @param message Example message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
      */
-    public static encodeDelimited(message: IExampleData, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encodeDelimited(message: IExample, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * * Decodes an ExampleData message from the specified reader or buffer.
-     * 	 * @function decode
-     * 	 * @memberof ExampleData
-     * 	 * @static
-     * 	 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * 	 * @param {number} [length] Message length if known beforehand
-     * 	 * @returns {ExampleData} ExampleData
-     * 	 * @throws {Error} If the payload is not a reader or valid buffer
-     * 	 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     * Decodes an Example message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns Example
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ExampleData;
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Example;
 
     /**
-     * * Decodes an ExampleData message from the specified reader or buffer, length delimited.
-     * 	 * @function decodeDelimited
-     * 	 * @memberof ExampleData
-     * 	 * @static
-     * 	 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * 	 * @returns {ExampleData} ExampleData
-     * 	 * @throws {Error} If the payload is not a reader or valid buffer
-     * 	 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     * Decodes an Example message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns Example
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): ExampleData;
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): Example;
 
     /**
-     * * Verifies an ExampleData message.
-     * 	 * @function verify
-     * 	 * @memberof ExampleData
-     * 	 * @static
-     * 	 * @param {Object.<string,*>} message Plain object to verify
-     * 	 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     * Verifies an Example message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
 
     /**
-     * * Creates an ExampleData message from a plain object. Also converts values to their respective internal types.
-     * 	 * @function fromObject
-     * 	 * @memberof ExampleData
-     * 	 * @static
-     * 	 * @param {Object.<string,*>} object Plain object
-     * 	 * @returns {ExampleData} ExampleData
+     * Creates an Example message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns Example
      */
-    public static fromObject(object: { [k: string]: any }): ExampleData;
+    public static fromObject(object: { [k: string]: any }): Example;
 
     /**
-     * * Creates a plain object from an ExampleData message. Also converts values to other types if specified.
-     * 	 * @function toObject
-     * 	 * @memberof ExampleData
-     * 	 * @static
-     * 	 * @param {ExampleData} message ExampleData
-     * 	 * @param {$protobuf.IConversionOptions} [options] Conversion options
-     * 	 * @returns {Object.<string,*>} Plain object
+     * Creates a plain object from an Example message. Also converts values to other types if specified.
+     * @param message Example
+     * @param [options] Conversion options
+     * @returns Plain object
      */
-    public static toObject(message: ExampleData, options?: $protobuf.IConversionOptions): { [k: string]: any };
+    public static toObject(message: Example, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
     /**
-     * * Converts this ExampleData to JSON.
-     * 	 * @function toJSON
-     * 	 * @memberof ExampleData
-     * 	 * @instance
-     * 	 * @returns {Object.<string,*>} JSON object
+     * Converts this Example to JSON.
+     * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
 
     /**
-     * * Gets the default type url for ExampleData
-     * 	 * @function getTypeUrl
-     * 	 * @memberof ExampleData
-     * 	 * @static
-     * 	 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * 	 * @returns {string} The default type url
+     * Gets the default type url for Example
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
 }
 
-/**
- * * Properties of an AllData.
- * 	 * @exports IAllData
- * 	 * @interface IAllData
- * 	 * @property {Array.<IWordData>|null} [words] AllData words
- * 	 * @property {Array.<IExampleData>|null} [examples] AllData examples
- */
+/** Properties of an AllData. */
 export interface IAllData {
 
     /** AllData words */
-    words?: (IWordData[]|null);
+    words?: (IWord[]|null);
 
     /** AllData examples */
-    examples?: (IExampleData[]|null);
+    examples?: (IExample[]|null);
+
+    /** AllData pos */
+    pos?: (AllData.IPartOfSpeech[]|null);
 }
 
-/**
- * * Constructs a new AllData.
- * 	 * @exports AllData
- * 	 * @classdesc Represents an AllData.
- * 	 * @implements IAllData
- * 	 * @constructor
- * 	 * @param {IAllData=} [properties] Properties to set
- */
+/** Represents an AllData. */
 export class AllData implements IAllData {
 
     /**
-     * * Constructs a new AllData.
-     * 	 * @exports AllData
-     * 	 * @classdesc Represents an AllData.
-     * 	 * @implements IAllData
-     * 	 * @constructor
-     * 	 * @param {IAllData=} [properties] Properties to set
+     * Constructs a new AllData.
+     * @param [properties] Properties to set
      */
     constructor(properties?: IAllData);
 
-    /**
-     * * AllData words.
-     * 	 * @member {Array.<IWordData>} words
-     * 	 * @memberof AllData
-     * 	 * @instance
-     */
-    public words: IWordData[];
+    /** AllData words. */
+    public words: IWord[];
+
+    /** AllData examples. */
+    public examples: IExample[];
+
+    /** AllData pos. */
+    public pos: AllData.IPartOfSpeech[];
 
     /**
-     * * AllData examples.
-     * 	 * @member {Array.<IExampleData>} examples
-     * 	 * @memberof AllData
-     * 	 * @instance
-     */
-    public examples: IExampleData[];
-
-    /**
-     * * Creates a new AllData instance using the specified properties.
-     * 	 * @function create
-     * 	 * @memberof AllData
-     * 	 * @static
-     * 	 * @param {IAllData=} [properties] Properties to set
-     * 	 * @returns {AllData} AllData instance
+     * Creates a new AllData instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns AllData instance
      */
     public static create(properties?: IAllData): AllData;
 
     /**
-     * * Encodes the specified AllData message. Does not implicitly {@link AllData.verify|verify} messages.
-     * 	 * @function encode
-     * 	 * @memberof AllData
-     * 	 * @static
-     * 	 * @param {IAllData} message AllData message or plain object to encode
-     * 	 * @param {$protobuf.Writer} [writer] Writer to encode to
-     * 	 * @returns {$protobuf.Writer} Writer
+     * Encodes the specified AllData message. Does not implicitly {@link AllData.verify|verify} messages.
+     * @param message AllData message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
      */
     public static encode(message: IAllData, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * * Encodes the specified AllData message, length delimited. Does not implicitly {@link AllData.verify|verify} messages.
-     * 	 * @function encodeDelimited
-     * 	 * @memberof AllData
-     * 	 * @static
-     * 	 * @param {IAllData} message AllData message or plain object to encode
-     * 	 * @param {$protobuf.Writer} [writer] Writer to encode to
-     * 	 * @returns {$protobuf.Writer} Writer
+     * Encodes the specified AllData message, length delimited. Does not implicitly {@link AllData.verify|verify} messages.
+     * @param message AllData message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
      */
     public static encodeDelimited(message: IAllData, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * * Decodes an AllData message from the specified reader or buffer.
-     * 	 * @function decode
-     * 	 * @memberof AllData
-     * 	 * @static
-     * 	 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * 	 * @param {number} [length] Message length if known beforehand
-     * 	 * @returns {AllData} AllData
-     * 	 * @throws {Error} If the payload is not a reader or valid buffer
-     * 	 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     * Decodes an AllData message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns AllData
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): AllData;
 
     /**
-     * * Decodes an AllData message from the specified reader or buffer, length delimited.
-     * 	 * @function decodeDelimited
-     * 	 * @memberof AllData
-     * 	 * @static
-     * 	 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * 	 * @returns {AllData} AllData
-     * 	 * @throws {Error} If the payload is not a reader or valid buffer
-     * 	 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     * Decodes an AllData message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns AllData
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
     public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): AllData;
 
     /**
-     * * Verifies an AllData message.
-     * 	 * @function verify
-     * 	 * @memberof AllData
-     * 	 * @static
-     * 	 * @param {Object.<string,*>} message Plain object to verify
-     * 	 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     * Verifies an AllData message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
 
     /**
-     * * Creates an AllData message from a plain object. Also converts values to their respective internal types.
-     * 	 * @function fromObject
-     * 	 * @memberof AllData
-     * 	 * @static
-     * 	 * @param {Object.<string,*>} object Plain object
-     * 	 * @returns {AllData} AllData
+     * Creates an AllData message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns AllData
      */
     public static fromObject(object: { [k: string]: any }): AllData;
 
     /**
-     * * Creates a plain object from an AllData message. Also converts values to other types if specified.
-     * 	 * @function toObject
-     * 	 * @memberof AllData
-     * 	 * @static
-     * 	 * @param {AllData} message AllData
-     * 	 * @param {$protobuf.IConversionOptions} [options] Conversion options
-     * 	 * @returns {Object.<string,*>} Plain object
+     * Creates a plain object from an AllData message. Also converts values to other types if specified.
+     * @param message AllData
+     * @param [options] Conversion options
+     * @returns Plain object
      */
     public static toObject(message: AllData, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
     /**
-     * * Converts this AllData to JSON.
-     * 	 * @function toJSON
-     * 	 * @memberof AllData
-     * 	 * @instance
-     * 	 * @returns {Object.<string,*>} JSON object
+     * Converts this AllData to JSON.
+     * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
 
     /**
-     * * Gets the default type url for AllData
-     * 	 * @function getTypeUrl
-     * 	 * @memberof AllData
-     * 	 * @static
-     * 	 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * 	 * @returns {string} The default type url
+     * Gets the default type url for AllData
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+export namespace AllData {
+
+    /** Properties of a PartOfSpeech. */
+    interface IPartOfSpeech {
+
+        /** PartOfSpeech id */
+        id?: (string|null);
+
+        /** PartOfSpeech ko */
+        ko?: (string|null);
+
+        /** PartOfSpeech en */
+        en?: (string|null);
+
+        /** PartOfSpeech enAlt */
+        enAlt?: (string|null);
+
+        /** PartOfSpeech wordId */
+        wordId?: (number|null);
+    }
+
+    /** Represents a PartOfSpeech. */
+    class PartOfSpeech implements IPartOfSpeech {
+
+        /**
+         * Constructs a new PartOfSpeech.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: AllData.IPartOfSpeech);
+
+        /** PartOfSpeech id. */
+        public id: string;
+
+        /** PartOfSpeech ko. */
+        public ko: string;
+
+        /** PartOfSpeech en. */
+        public en: string;
+
+        /** PartOfSpeech enAlt. */
+        public enAlt: string;
+
+        /** PartOfSpeech wordId. */
+        public wordId: number;
+
+        /**
+         * Creates a new PartOfSpeech instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns PartOfSpeech instance
+         */
+        public static create(properties?: AllData.IPartOfSpeech): AllData.PartOfSpeech;
+
+        /**
+         * Encodes the specified PartOfSpeech message. Does not implicitly {@link AllData.PartOfSpeech.verify|verify} messages.
+         * @param message PartOfSpeech message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: AllData.IPartOfSpeech, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified PartOfSpeech message, length delimited. Does not implicitly {@link AllData.PartOfSpeech.verify|verify} messages.
+         * @param message PartOfSpeech message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: AllData.IPartOfSpeech, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a PartOfSpeech message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns PartOfSpeech
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): AllData.PartOfSpeech;
+
+        /**
+         * Decodes a PartOfSpeech message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns PartOfSpeech
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): AllData.PartOfSpeech;
+
+        /**
+         * Verifies a PartOfSpeech message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a PartOfSpeech message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns PartOfSpeech
+         */
+        public static fromObject(object: { [k: string]: any }): AllData.PartOfSpeech;
+
+        /**
+         * Creates a plain object from a PartOfSpeech message. Also converts values to other types if specified.
+         * @param message PartOfSpeech
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: AllData.PartOfSpeech, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this PartOfSpeech to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for PartOfSpeech
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
 }

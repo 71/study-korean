@@ -1,4 +1,4 @@
-import { WordData } from "../db";
+import { DefinedWord, Word } from "../db";
 
 /**
  * Same as `value!`, used when the null assertion operator is unavailable (e.g.
@@ -48,7 +48,14 @@ export function throttle<Args extends any[]>(
   };
 }
 
-export function summarizeTranslations(word: WordData): string {
+export function definitionsOf(word: Word | undefined): readonly DefinedWord[] {
+  if (word === undefined) {
+    return [];
+  }
+  return Object.values(word).filter((v) => typeof v === "object" && v !== null);
+}
+
+export function summarizeTranslations(word: DefinedWord): string {
   const translations: string[] = [];
 
   for (const meaning of word.meanings) {

@@ -4,6 +4,7 @@
 	import { db } from "../store";
 	import Line from "./Line.svelte";
 	import { triggerRedraw } from "./TokenLines.svelte";
+	import { definitionsOf } from "../utils";
 
   export let inputSelection: AmbiguousTokenSelection;
   export let selectedSelection: TokenSelection;
@@ -18,7 +19,7 @@
     }
 
     const selectedToken = inputSelection.tokens[selectedTokenIndex];
-    const selectedData = typeof selectedToken === "string" ? $db.wordByText(selectedToken) : [];
+    const selectedData = typeof selectedToken === "string" ? definitionsOf($db.wordByText(selectedToken)) : [];
 
     selectedSelection = {
       source: selectedElement,

@@ -3,7 +3,7 @@ syntax = "proto3";
 option java_package = "gregoiregeis.studykorean.proto";
 option java_multiple_files = true;
 
-message SentenceData {
+message TokenizedText {
   message Token {
     string text = 1;
     optional int32 word_id = 2;
@@ -13,7 +13,8 @@ message SentenceData {
   repeated Token tokens = 2;
 }
 
-message WordData {
+// An entry identified by the text of the word or expression.
+message Word {
   message Meaning {
     // We don't encode examples right now because there's too many
     // of them, we don't have accurate translations of them, and
@@ -36,9 +37,9 @@ message WordData {
       repeated int32 word_ids = 2;
     }
 
-    SentenceData definition = 1;
-    optional string translation = 2;
-    optional string definition_translation = 3;
+    TokenizedText definition = 1;
+    string translation = 2;
+    string definition_translation = 3;
 
     // See comment above.
     // repeated Example examples = 4;
@@ -47,7 +48,8 @@ message WordData {
     repeated WordRef original_forms = 6;
     repeated WordRef synonyms = 7;
     repeated WordRef antonyms = 8;
-    repeated string abbreviations = 9;
+    repeated WordRef honorifics = 9;
+    repeated string abbreviations = 10;
   }
 
   message RelatedForm {
@@ -59,27 +61,48 @@ message WordData {
     }
   }
 
-  int32 word_id = 1;
-  string text = 2;
-  string pos = 3;
-  string pos_ko = 4;
-  string pos_descr = 5;
-  string lexical_unit = 6;
-  optional string origin = 7;
-  optional string pronunciation = 8;
-  optional string sound_url = 9;
+  message Defined {
+    int32 word_id = 1;
+    string text = 2;
+    string pos = 3; // As in PartOfSpeech.id
+    string lexical_unit = 6;
+    string origin = 7;
+    string pronunciation = 8;
+    string sound_url = 9;
 
-  repeated Meaning meanings = 10;
-  repeated RelatedForm related_forms = 11;
+    repeated Meaning meanings = 10;
+    repeated RelatedForm related_forms = 11;
 
-  repeated int32 example_ids = 12;
+    repeated int32 example_ids = 12;
+    repeated int32 appears_in_definition_of = 13;
+  }
 
-  optional int32 most_common = 13;
+  string text = 1;
+
+  optional Defined noun = 2; // 명사
+  optional Defined dependent_noun = 3; // 의존 명사
+  optional Defined pronoun = 4; // 대명사
+  optional Defined interjection = 5; // 감탄사
+  optional Defined verb = 6; // 동사
+  optional Defined aux_verb = 7; // 보조 동사
+  optional Defined aux_adjective = 8; // 보조 형용사
+  optional Defined eomi = 9; // 어미, verb suffix
+  optional Defined adjective = 10; // 형용사
+  optional Defined adverb = 11; // 부사
+  optional Defined josa = 12; // 조사, particle
+  optional Defined determiner = 13; // 관형사
+  optional Defined modifier = 14; // 접사
+  optional Defined number = 15; // 수사
+  optional Defined abbreviation = 16; // 약어
+  optional Defined phrase = 17; // 구
+
+  int32 score = 20;
+  optional int32 most_common = 21;
 }
 
-message ExampleData {
+message Example {
   int32 example_id = 1;
-  SentenceData ko_sentence = 2;
+  TokenizedText ko_sentence = 2;
   string en_translation = 3;
   string en_translation_alt = 4;
   string notes = 5;
@@ -88,6 +111,15 @@ message ExampleData {
 }
 
 message AllData {
-  repeated WordData words = 1;
-  repeated ExampleData examples = 2;
+  message PartOfSpeech {
+    string id = 1;  // English identifier as used in Word
+    string ko = 2;
+    string en = 3;
+    string en_alt = 4;
+    int32 word_id = 5;
+  }
+
+  repeated Word words = 1;
+  repeated Example examples = 2;
+  repeated PartOfSpeech pos = 3;
 }

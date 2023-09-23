@@ -1,10 +1,15 @@
 import Data from "../../data/kodata.rawproto";
 import { AllData } from "./data-proto";
+import { definitionsOf } from "./utils/index";
 import { syllablesToJamo } from "./utils/korean";
 
-export type WordData = import("./data-proto.d.ts").WordData;
-export type MeaningData = import("./data-proto.d.ts").WordData.Meaning;
-export type SentenceData = import("./data-proto.d.ts").SentenceData;
+export type Word = import("./data-proto.d.ts").Word;
+export type DefinedWord = import("./data-proto.d.ts").Word.Defined;
+export type Meaning = import("./data-proto.d.ts").Word.Meaning;
+export type TokenizedText = import("./data-proto.d.ts").TokenizedText;
+export type POS = keyof {
+  [P in keyof Word as Word[P] extends import("./data-proto.d.ts").Word.IDefined | undefined | null ? P : never]: 0;
+};
 
 interface SeenCounter {
   [word: string]: number | undefined;
@@ -15,24 +20,27 @@ const seenCountKey = (word: string) => `word-${word[0]}`;
 const emptyList = Object.freeze([]);
 
 export class Db {
-  private readonly dictionary = new Map<string, WordData[]>();
-  private readonly idToWord = new Map<number, WordData>();
+  private readonly dictionary = new Map<string, Word>();
+  private readonly idToWord = new Map<number, DefinedWord>();
   private readonly jamoPrefixes = new Map<string, string[]>();
-  private readonly hanMap = new Map<string, [WordData[], string[]]>();
+  private readonly hanMap = new Map<string, [DefinedWord[], string[]]>();
+  private readonly idToPos = new Map<string, import("./data-proto.d.ts").AllData.PartOfSpeech>();
 
   private constructor(allData: ReturnType<(typeof AllData)["decode"]>) {
-    for (const word of allData.words as Iterable<WordData>) {
-      // Add to dictionary.
-      const list = this.dictionary.get(word.text);
+    (window as Record<string, any>)["DB"] = this;
 
-      if (list === undefined) {
-        this.dictionary.set(word.text, [word]);
-      } else {
-        list.push(word);
-      }
+    for (const pos of allData.pos as Iterable<import("./data-proto.d.ts").AllData.PartOfSpeech>) {
+      this.idToPos.set(pos.id!, pos);
+    }
+
+    for (const word of allData.words as Iterable<Word>) {
+      // Add to dictionary.
+      this.dictionary.set(word.text, word);
 
       // Add to ID map.
-      this.idToWord.set(word.wordId, word);
+      for (const def of definitionsOf(word)) {
+        this.idToWord.set(def.wordId, def);
+      }
 
       // Add to prefixes list.
       let jamo: string | undefined = undefined;
@@ -59,34 +67,26 @@ export class Db {
     for (const list of this.dictionary.values()) {
       Object.freeze(list);
     }
-
-    (window as Record<string, any>)["DB"] = this;
   }
 
-  public wordByText(word: string): readonly WordData[] {
-    return this.dictionary.get(word) ?? emptyList;
+  public wordByText(word: string): Word | undefined {
+    return this.dictionary.get(word);
   }
 
-  public wordByPos(word: string, pos: string): WordData | undefined {
-    return pos.charCodeAt(0) > 200
-      ? this.wordByText(word).find((word) => word.posKo === pos)
-      : this.wordByText(word).find((word) => word.pos === pos);
+  public wordByPos(word: string, pos: POS): DefinedWord | undefined {
+    return this.wordByText(word)?.[pos] as DefinedWord | undefined;
   }
 
-  public wordById(id: number): WordData {
+  public wordById(id: number): DefinedWord {
     return this.idToWord.get(id)!;
   }
 
-  public synonymsOf(word: WordData): readonly WordData[] {
-    const synonyms: WordData[] = [];
+  public homographsOf(word: DefinedWord): readonly DefinedWord[] {
+    return definitionsOf(this.dictionary.get(word.text)!).filter((def) => def !== word);
+  }
 
-    for (const synonym of this.dictionary.get(word.text)!) {
-      if (synonym !== word) {
-        synonyms.push(synonym);
-      }
-    }
-
-    return synonyms;
+  public posKoreanText(id: string): string {
+    return this.idToPos.get(id)!.ko;
   }
 
   public wordsStartingWith(string: string, { limit = 0 }: { limit?: number } = {}): readonly string[] {
@@ -135,7 +135,7 @@ export class Db {
     localStorage.setItem(`seen-${word.slice(0, 1)}`, JSON.stringify(seenCounts));
   }
 
-  public wordsWithHan(han: string): [readonly WordData[], readonly string[]] {
+  public wordsWithHan(han: string): [readonly DefinedWord[], readonly string[]] {
     const hanMap = this.hanMap;
 
     if (hanMap.size === 0) {
@@ -160,7 +160,7 @@ export class Db {
 
       // Sort words by usage and find Korean readings.
       for (const [han, [words, readings]] of hanMap) {
-        sortWordsByRelevance(words);
+        this.sortWordsByRelevance(words);
 
         for (const word of words) {
           if (word.origin?.length !== word.text.length) {
@@ -180,8 +180,8 @@ export class Db {
     return hanMap.get(han) ?? [emptyList, emptyList];
   }
 
-  public wordsWithEnglishTranslationIncluding(text: string): readonly WordData[] {
-    const results: WordData[] = [];
+  public wordsWithEnglishTranslationIncluding(text: string): readonly DefinedWord[] {
+    const results: DefinedWord[] = [];
 
     for (const word of this.idToWord.values()) {
       let found = false;
@@ -201,7 +201,15 @@ export class Db {
       }
     }
 
-    return sortWordsByRelevance(results);
+    return this.sortWordsByRelevance(results);
+  }
+
+  private sortWordsByRelevance(words: DefinedWord[]): DefinedWord[] {
+    return words.sort((a, b) => {
+      const cmp = this.dictionary.get(b.text)!.score - this.dictionary.get(a.text)!.score;
+
+      return cmp !== 0 ? cmp : a.text.localeCompare(b.text);
+    });
   }
 
   public static async load(): Promise<Db> {
@@ -210,19 +218,4 @@ export class Db {
 
     return new Db(AllData.decode(new Uint8Array(data)));
   }
-}
-
-function sortWordsByRelevance(words: WordData[]): WordData[] {
-  return words.sort((a, b) => {
-    if (a.mostCommon != null && b.mostCommon != null) {
-      return a.mostCommon - b.mostCommon;
-    }
-    if (a.mostCommon != null) {
-      return -1;
-    }
-    if (b.mostCommon != null) {
-      return 1;
-    }
-    return a.text.localeCompare(b.text);
-  });
 }

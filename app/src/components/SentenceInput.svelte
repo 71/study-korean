@@ -4,7 +4,7 @@
 	import type { Db } from "../db";
 	import { resizeTokens } from "../utils/tokens";
 	import Token, { AmbiguousTokenSelection } from "./Token.svelte";
-	import { throttle } from "../utils";
+	import { definitionsOf, throttle } from "../utils";
 
   export let okt: typeof import("oktjs") | undefined;
   export let db: Db | undefined;
@@ -117,7 +117,7 @@
         okt.tokenize(okt.normalize(sentenceOrPlaceholder))
           .map((token) => ({
             text: token.text,
-            wordIds: db!.wordByText(token.stem ?? token.text).map((word) => word.wordId),
+            wordIds: definitionsOf(db!.wordByText(token.stem ?? token.text)).map((word) => word.wordId),
           })),
       );
       break;
