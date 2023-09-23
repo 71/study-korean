@@ -7,6 +7,23 @@ const CURRENT_CACHES = {
   db: "db-v1",
 };
 
+const fetchFromCache = async (cacheName: keyof typeof CURRENT_CACHES, request: Request) => {
+  const cache = await caches.open(cacheName);
+  const matched = await cache.match(request);
+
+  if (matched !== undefined) {
+    return matched;
+  }
+
+  const response = await fetch(request.clone());
+
+  if (response.status < 400) {
+    cache.put(request, response.clone());
+  }
+
+  return response;
+};
+
 self.addEventListener("activate", (event) => {
   // Delete all caches not in `CURRENT_CACHES`.
   const currentCacheNames = new Set(Object.values(CURRENT_CACHES));
@@ -25,45 +42,15 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  const path = new URL(event.request.url).pathname;
+  const requestUrl = new URL(event.request.url);
+  const path = requestUrl.pathname;
 
   if (path.startsWith("kodata-") && path.endsWith(".rawproto")) {
-    const promise = async function () {
-      const cache = await caches.open(CURRENT_CACHES.db);
-      const matched = await cache.match(event.request);
-
-      if (matched !== undefined) {
-        return matched;
-      }
-
-      const response = await fetch(event.request.clone());
-
-      if (response.status < 400) {
-        cache.put(event.request, response.clone());
-      }
-
-      return response;
-    }();
-
-    event.respondWith(promise);
-  } else if (path.endsWith(".js") || path.endsWith(".css") || path.endsWith(".html")) {
-    const promise = async function () {
-      const cache = await caches.open(CURRENT_CACHES.db);
-      const matched = await cache.match(event.request);
-
-      if (matched !== undefined) {
-        return matched;
-      }
-
-      const response = await fetch(event.request.clone());
-
-      if (response.status < 400) {
-        cache.put(event.request, response.clone());
-      }
-
-      return response;
-    }();
-
-    event.respondWith(promise);
+    event.respondWith(fetchFromCache("db", event.request));
+  } else if (/^\/[\w-\.]+\.[a-z]+$/.test(path) || requestUrl.host !== location.host) {
+    event.respondWith(fetchFromCache("assets", event.request));
+  } else {
+    // Handle requests to `/`, `/s/안녕/`, `/s/안녕/1`, etc.
+    event.respondWith(fetchFromCache("assets", new Request(new URL("/index.html", event.request.url))));
   }
 });
