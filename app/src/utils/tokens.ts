@@ -34,7 +34,5 @@ export function resizeTokens(tokens: readonly SimpleToken[]) {
     }
   }
 
-  console.log("resized", tokens, "to", result);
-
   return result;
 }

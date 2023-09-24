@@ -111,6 +111,7 @@
   td.header {
     padding: 0 1em 1em 0;
     font-size: .7em;
+    text-wrap: nowrap;
   }
 
   td {

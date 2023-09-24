@@ -48,6 +48,10 @@
 </script>
 
 <script lang="ts">
+	import { onDestroy } from "svelte";
+
+	import { withKey } from "../utils/ui";
+
   export let text: string;
   export let wordIds: readonly number[];
   export let selection: AmbiguousTokenSelection | undefined;
@@ -59,13 +63,19 @@
   $: thisSelection = { source: element, tokens: wordIds.length === 0 ? [text] : wordIds };
   $: selectionHandler = selectable ? (() => selection = thisSelection) : undefined;
   $: selected = selection === thisSelection;
+
+  onDestroy(() => {
+    if (selected) {
+      selection = undefined;
+    }
+  });
 </script>
 
 <span
   bind:this={element}
-  class="word" class:selected
+  class=token class:selected
   on:click={selectionHandler}
-  on:keypress={selectionHandler}
+  on:keypress={selectionHandler !== undefined ? withKey("Space", selectionHandler) : undefined}
   role=button
   tabindex=0
 >

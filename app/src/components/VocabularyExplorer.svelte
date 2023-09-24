@@ -63,7 +63,7 @@
 
   const dispatch = createEventDispatcher<{
     tokenSelected: AmbiguousTokenSelection | undefined,
-    tokenReplaced: TokenSelection | undefined,
+    tokenReplaced: AmbiguousTokenSelection | undefined,
     isProminent: boolean,
   }>();
 
@@ -85,7 +85,7 @@
   $: tokenElement = wordElement?.querySelector(".text-box") as HTMLElement;
   $: koPos = (tokenData !== undefined ? $db.posKoreanText(tokenData.pos) : typeToPos[type]) as keyof typeof $uiWordIds;
 
-  $: meanings = type === Type.Hangul ? tokenData!.meanings as Meaning[] : undefined;
+  $: meanings = type === Type.Hangul ? tokenData?.meanings as Meaning[] | undefined : undefined;
   $: mostCommon = type === Type.Hangul ? $db.wordByText(tokenText)?.mostCommon : undefined;
   $: [wordsWithHan, hanReadings] = type === Type.Han ? $db.wordsWithHan(tokenText) : [undefined, undefined];
 
@@ -136,7 +136,7 @@
   }
 
   function replaceWith(wordId: number) {
-    dispatch("tokenReplaced", { source: inputSelection.source, token: wordId });
+    dispatch("tokenReplaced", { source: inputSelection.source, tokens: [wordId] });
   }
 </script>
 
@@ -159,8 +159,8 @@
         <span class="text">{tokenText}</span>
       </div>
 
-      <div class="info">
-        {#if tokenData !== undefined && tokenData.origin != null}
+      <div class="info" class:dense={tokenData?.origin != null && mostCommon != null}>
+        {#if tokenData?.origin != null}
           <div>
             <em class="hanja">
               {#each tokenData.origin as character}
@@ -186,16 +186,13 @@
             <Token text={koPos} wordIds={[$uiWordIds[koPos].wordId]} bind:selection={outputSelection} />
           </em>
 
-          {#each homographs as homograph, i}
-            {#if i > 0}
-              |
-            {/if}
+          {#each homographs as homograph}
             <span
               on:click={() => replaceWith(homograph.wordId)}
               on:keypress={withKey("Space", () => replaceWith(homograph.wordId))}
               role="button"
               tabindex=0
-            >{homograph.pos}</span>
+            >{$db.posKoreanText(homograph.pos)}</span>
           {/each}
         </div>
 
@@ -294,6 +291,10 @@
       justify-content: space-around;
 
       color: var(--fg-secondary);
+
+      &.dense {
+        font-size: 1.4em;
+      }
     }
 
     & em {
@@ -316,7 +317,6 @@
       font-size: 4em;
       display: block;
       margin: .1em .3em;
-      margin-top: 0;
 
       @media (max-width: 500px) {
         & {
@@ -399,6 +399,10 @@
     background-color: var(--background);
     padding: .1em 0;
     margin: .4em 0;
+  }
+
+  .pos-picker > span {
+    margin-left: .5em;
   }
 
   hr {

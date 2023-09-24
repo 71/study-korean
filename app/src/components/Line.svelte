@@ -7,11 +7,12 @@
 
   let subscription: { (): void; } | undefined;
 
-  $: if (from !== undefined && to !== undefined) {
+  $: if (from !== undefined && from.getRootNode() !== from && to !== undefined) {
     subscription?.();
     subscription = drawLine({ from, to });
   } else {
     subscription?.();
+    subscription = undefined;
   }
 
   onDestroy(() => subscription?.());

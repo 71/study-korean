@@ -47,23 +47,23 @@
   });
 
   // Vocabulary.
-  $: extendedSentenceSelection = ((): AmbiguousTokenSelection | undefined => {
-    if (db === undefined || sentenceSelection === undefined) {
-      return sentenceSelection;
-    }
+  let extendedSentenceSelection: AmbiguousTokenSelection | undefined;
 
+  $: if (db !== undefined && sentenceSelection !== undefined) {
     const tokensText = sentenceSelection.tokens.map((token) =>
       typeof token === "string" ? token : db!.wordById(token).text,
     );
 
-    return {
+    extendedSentenceSelection = {
       source: sentenceSelection.source,
       tokens: [
         ...sentenceSelection.tokens,
         ...suggestions.filter((x) => !tokensText.includes(x)),
       ],
     };
-  })();
+  } else {
+    extendedSentenceSelection = undefined;
+  }
 
   let selections: readonly AmbiguousTokenSelection[] = [];
   let prominentSelection: AmbiguousTokenSelection | undefined;
@@ -72,13 +72,12 @@
     extendedSentenceSelection, ...selections,
   ];
 
-  $: console.log({ sections, sentenceSelection })
-
-  function updateSelection(index: number, selection: AmbiguousTokenSelection | undefined) {
+  function updateSelection(index: number, selection: AmbiguousTokenSelection | undefined, replace = false) {
     // `+ 1` to include item at `index`, `- 1` to remove `sentenceSelection`.
     if (extendedSentenceSelection === undefined) {
       index--;
     }
+    // TODO: handle `replace`
     if ((selection?.tokens.length ?? 0) === 0) {
       selections = selections.slice(0, index + 1 - 1);
     } else {
@@ -104,7 +103,7 @@
     <p>Loading....</p>
   {:then _}
     <div class="sections" bind:this={sectionsElement}>
-      {#each sections as selection, i}
+      {#each sections as selection, i (selection)}
         {#if i > 0}
           <Separator on:click={() => sectionsElement.children[i - 1].scrollIntoView({ behavior: "smooth" })} />
         {:else}
@@ -113,6 +112,7 @@
 
         <VocabularySelectorExplorer
           inputSelection={selection}
+          on:tokenReplaced={({ detail: selection }) => updateSelection(i, selection, /* replace= */ true)}
           on:tokenSelected={({ detail: selection }) => updateSelection(i, selection)}
           on:isProminent={({ detail: isProminent }) => {
             if (isProminent) {

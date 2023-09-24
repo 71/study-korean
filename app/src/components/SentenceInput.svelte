@@ -19,7 +19,10 @@
     Foreign,
   }
 
-  $: sentenceOrPlaceholder = sentence.length === 0 ? "안녕하세요" : sentence;
+  const placeholder = "그렉의 한국어 사전";
+
+  $: displayPlaceholder = sentence.length === 0;
+  $: sentenceOrPlaceholder = displayPlaceholder ? placeholder : sentence;
   $: type = /\p{Script=Hangul}/u.test(sentenceOrPlaceholder) ? Type.Hangul : Type.Foreign;
 
   let selectionAtEnd = false;
@@ -141,20 +144,42 @@
   function handleSentenceInput(e: Event) {
     sentence = sentenceElement.textContent?.replace(/\n/g, " ") ?? "";
 
+    if (displayPlaceholder) {
+      sentence = sentence.replace(placeholder, "");
+    }
+
     if (okt !== undefined && db !== undefined && !(e as InputEvent).isComposing) {
-      tick().then(refreshSentenceInputTokens);
+      tick().then(() => {
+        refreshSentenceInputTokens();
+
+        if (sentence === "") {
+          tick().then(() => {
+            document.getSelection()!.setPosition(sentenceElement, 0);
+          });
+        }
+      });
     }
   }
 
-  $: suggestions = db === undefined || !selectionAtEnd ? [] : ((): readonly string[] => {
+  $: if (displayPlaceholder && sentenceInputTokens.length > 0 && sentenceElement !== undefined) {
+    tick().then(() => {
+      const tokenElement = [...sentenceElement.querySelectorAll("span.token")].find((span) => span.textContent === "한국어");
+
+      (tokenElement as HTMLElement | undefined)?.click();
+    });
+  }
+
+  $: if (db === undefined || !selectionAtEnd) {
+    suggestions = [];
+  } else {
     const lastWord = /\p{Script=Hangul}+$/u.exec(sentence.trimEnd());
 
     if (lastWord === null) {
-      return [];
+      suggestions = [];
+    } else {
+      suggestions = db.wordsStartingWith(lastWord[0], { limit: 100 });
     }
-
-    return db.wordsStartingWith(lastWord[0], { limit: 100 });
-  })();
+  }
 
   $: if (db !== undefined && okt !== undefined) {
     sentenceElement.replaceChildren();
@@ -170,6 +195,11 @@
       const selection = document.getSelection()!;
 
       if (!sentenceElement.contains(selection.focusNode)) {
+        return;
+      }
+
+      if (displayPlaceholder) {
+        selection.setPosition(sentenceElement, 0);
         return;
       }
 
@@ -194,6 +224,8 @@
     class:placeholder={sentenceOrPlaceholder !== sentence}
     bind:this={sentenceElement}
     on:input={handleSentenceInput}
+    role="textbox"
+    tabindex=0
   >
     <!-- Key contents with `sentenceInputTokens` to force a redraw, otherwise Svelte gets confused
          when editing text and modifying the tokens at the same time.
@@ -220,6 +252,7 @@
   span[contenteditable] {
     margin: .5em 0;
     outline: none;
+    display: block;
 
     &.placeholder {
       color: var(--fg-secondary);
