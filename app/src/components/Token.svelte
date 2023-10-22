@@ -48,21 +48,28 @@
 </script>
 
 <script lang="ts">
-	import { onDestroy } from "svelte";
-
-	import { withKey } from "../utils/ui";
+  import { createEventDispatcher, onDestroy } from "svelte";
+  import { withKey } from "../utils/ui";
 
   export let text: string;
   export let wordIds: readonly number[];
   export let selection: AmbiguousTokenSelection | undefined;
+
+  const dispatch = createEventDispatcher<{ activeTokenClick: AmbiguousTokenSelection }>();
 
   let element: HTMLElement;
   let thisSelection: AmbiguousTokenSelection;
 
   $: selectable = wordIds.length > 0 || /^[\p{Script=Han}\p{Script=Hangul}]+$/u.test(text);
   $: thisSelection = { source: element, tokens: wordIds.length === 0 ? [text] : wordIds };
-  $: selectionHandler = selectable ? (() => selection = thisSelection) : undefined;
   $: selected = selection === thisSelection;
+  $: selectionHandler = selectable ? () => {
+    if (selection !== thisSelection) {
+      selection = thisSelection;
+    } else {
+      dispatch("activeTokenClick", thisSelection);
+    }
+  } : undefined;
 
   onDestroy(() => {
     if (selected) {

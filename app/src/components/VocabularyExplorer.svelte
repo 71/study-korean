@@ -61,13 +61,16 @@
 	import { nn, summarizeTranslations } from "../utils";
 	import { Meaning } from "../db";
 
+  export let inputSelection: TokenSelection;
+
   const dispatch = createEventDispatcher<{
     tokenSelected: AmbiguousTokenSelection | undefined,
     tokenReplaced: AmbiguousTokenSelection | undefined,
+    tokenUnselected: AmbiguousTokenSelection,
     isProminent: boolean,
   }>();
 
-  export let inputSelection: TokenSelection;
+  const dispatchTokenUnselected = (e: CustomEvent<AmbiguousTokenSelection>) => dispatch("tokenUnselected", e.detail);
 
   $: token = inputSelection.token;
   $: tokenData = typeof token === "string" ? undefined : $db.wordById(token);
@@ -164,7 +167,8 @@
           <div>
             <em class="hanja">
               {#each tokenData.origin as character}
-                <Token text={character} wordIds={[]} bind:selection={outputSelection} />
+                <Token text={character} wordIds={[]} bind:selection={outputSelection}
+                       on:activeTokenClick={dispatchTokenUnselected} />
               {/each}
             </em>
           </div>
@@ -183,7 +187,8 @@
 
         <div class="pos-picker">
           <em>
-            <Token text={koPos} wordIds={[$uiWordIds[koPos].wordId]} bind:selection={outputSelection} />
+            <Token text={koPos} wordIds={[$uiWordIds[koPos].wordId]} bind:selection={outputSelection}
+                   on:activeTokenClick={dispatchTokenUnselected} />
           </em>
 
           {#each homographs as homograph}
@@ -198,11 +203,14 @@
 
         {#if mostCommon != null}
           <div>
-            <Token text="사용" wordIds={[$uiWordIds.사용.wordId]} bind:selection={outputSelection} />
-            <Token text="빈도" wordIds={[$uiWordIds.빈도.wordId]} bind:selection={outputSelection} />수
+            <Token text="사용" wordIds={[$uiWordIds.사용.wordId]} bind:selection={outputSelection}
+                   on:activeTokenClick={dispatchTokenUnselected} />
+            <Token text="빈도" wordIds={[$uiWordIds.빈도.wordId]} bind:selection={outputSelection}
+                   on:activeTokenClick={dispatchTokenUnselected} />수
             <em>{mostCommon}</em>
             <!--nobr-->
-            <Token text="위" wordIds={[$uiWordIds.위.wordId]} bind:selection={outputSelection} />
+            <Token text="위" wordIds={[$uiWordIds.위.wordId]} bind:selection={outputSelection}
+                   on:activeTokenClick={dispatchTokenUnselected} />
           </div>
         {/if}
       </div>
@@ -231,7 +239,8 @@
                 <!--nobr-->
               {:else if /^\p{Script=Han}$/u.test(character)}
                 <!--nobr-->
-                <Token text={character} wordIds={[]} bind:selection={outputSelection} />
+                <Token text={character} wordIds={[]} bind:selection={outputSelection}
+                       on:activeTokenClick={dispatchTokenUnselected} />
                 <!--nobr-->
               {:else}
                 <!--nobr-->
@@ -243,7 +252,8 @@
           </td>
 
           <td>
-            <Token text={word.text} wordIds={[word.wordId]} bind:selection={outputSelection} />
+            <Token text={word.text} wordIds={[word.wordId]} bind:selection={outputSelection}
+                   on:activeTokenClick={dispatchTokenUnselected} />
           </td>
 
           <td>
@@ -259,7 +269,8 @@
       {#each $db.wordsWithEnglishTranslationIncluding(tokenText) as word}
         <tr>
           <td>
-            <Token text={word.text} wordIds={[word.wordId]} bind:selection={outputSelection} />
+            <Token text={word.text} wordIds={[word.wordId]} bind:selection={outputSelection}
+                   on:activeTokenClick={dispatchTokenUnselected} />
           </td>
           <td>
             {nn(word.meanings).find((m) => nn(m.translation).includes(tokenText))?.translation}

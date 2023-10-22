@@ -72,12 +72,22 @@
     extendedSentenceSelection, ...selections,
   ];
 
-  function updateSelection(index: number, selection: AmbiguousTokenSelection | undefined, replace = false) {
-    // `+ 1` to include item at `index`, `- 1` to remove `sentenceSelection`.
+  const enum UpdateType {
+    Remove,
+    Replace,
+    Update,
+  }
+
+  function updateSelection(index: number, selection: AmbiguousTokenSelection | undefined, type: UpdateType) {
     if (extendedSentenceSelection === undefined) {
       index--;
     }
-    // TODO: handle `replace`
+    if (type === UpdateType.Remove) {
+      selections = selections.slice(0, index - 1);
+      return;
+    }
+    // TODO: handle `type === Replace`
+    // `+ 1` to include item at `index`, `- 1` to remove `sentenceSelection`.
     if ((selection?.tokens.length ?? 0) === 0) {
       selections = selections.slice(0, index + 1 - 1);
     } else {
@@ -112,8 +122,9 @@
 
         <VocabularySelectorExplorer
           inputSelection={selection}
-          on:tokenReplaced={({ detail: selection }) => updateSelection(i, selection, /* replace= */ true)}
-          on:tokenSelected={({ detail: selection }) => updateSelection(i, selection)}
+          on:tokenReplaced={({ detail: selection }) => updateSelection(i, selection, UpdateType.Replace)}
+          on:tokenSelected={({ detail: selection }) => updateSelection(i, selection, UpdateType.Update)}
+          on:tokenUnselected={({ detail: selection }) => updateSelection(i, selection, UpdateType.Remove)}
           on:isProminent={({ detail: isProminent }) => {
             if (isProminent) {
               breadcrumbs = sections.slice(0, i + 1).map((t) => `${t.tokens[0]}`);
@@ -171,6 +182,7 @@
       background: none;
       border: none;
       color: var(--fg-primary);
+      cursor: pointer;
     }
   }
 </style>

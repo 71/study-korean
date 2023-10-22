@@ -34,4 +34,5 @@
   on:isProminent
   on:tokenReplaced
   on:tokenSelected
+  on:tokenUnselected
 />
