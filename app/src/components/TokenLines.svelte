@@ -2,8 +2,9 @@
 	import { writable } from "svelte/store";
 	import { TransitionConfig } from "svelte/transition";
 	import { showTranslations } from "../store";
+	import { tick } from "svelte";
 
-  type Line = readonly [target: HTMLElement, pathData: string, fromMask: string, toMask: string];
+  type Line = readonly [target: HTMLElement, pathData: string, fromMask: string, toMask: string, source: HTMLElement];
 
   const lines = writable<readonly Line[]>([]);
 
@@ -24,83 +25,89 @@
     `${topX + side - 1} ${topY + side}`,
   ].join(" ");
 
+  const computeLine = (from: HTMLElement, to: HTMLElement): Line => {
+    const fromRect = from.getBoundingClientRect();
+    const toRect = to.getBoundingClientRect();
+
+    // For `y` positions, add/subtract 1 to account for borders.
+    const xFrom = fromRect.left + fromRect.width / 2;
+    const yFrom = fromRect.top + scrollY + fromRect.height + 1;
+    const xTo = toRect.left + toRect.width / 2;
+    const yTo = toRect.top + scrollY + 10 - 1;
+
+    const sqSide = 4;
+    const startSqSide = sqSide - 1;
+
+    // Do not draw corners if the X positions are very close.
+    const drawStraightLine = Math.abs(xFrom - xTo) < sqSide * 3;
+
+    const fromSquarePath = squareToBottomPath(xFrom, yFrom - sqSide, startSqSide);
+    const fromSquareMask = squareToBottomPoints(xFrom, yFrom - sqSide, startSqSide);
+
+    const toSquarePath = squareToBottomPath(drawStraightLine ? xFrom : xTo, yTo - sqSide * 3, sqSide);
+    const toSquareMask = squareToBottomPoints(drawStraightLine ? xFrom : xTo, yTo - sqSide * 3, sqSide);
+
+    let path: string;
+
+    if (drawStraightLine) {
+      // Use `xFrom` instead of `xTo` since the width of `from` is likely
+      // smaller than `to`'s (because `to` has a bigger font).
+      path = [
+        fromSquarePath,
+        `L ${xFrom} ${yTo - sqSide * 3}`,
+        toSquarePath,
+      ].join(" ");
+    } else {
+      const cornerSqSide = sqSide;
+
+      const xBelowFrom = xFrom;
+      const yBelowFrom = yTo - sqSide * 5;
+
+      const xAboveTo = xTo;
+      const yAboveTo = yBelowFrom;
+
+      // Use `hSqOffset` to handle corners that either go left or right.
+      const hSqOffset = xFrom < xTo ? cornerSqSide : -cornerSqSide;
+
+      path = [
+        // Start
+        fromSquarePath,
+
+        // Line down to square
+        `L ${xBelowFrom} ${yBelowFrom - cornerSqSide}`,
+        `L ${xBelowFrom - hSqOffset} ${yBelowFrom}`,
+        `L ${xBelowFrom} ${yBelowFrom + cornerSqSide}`,
+        `L ${xBelowFrom + hSqOffset} ${yBelowFrom}`,
+        `M ${xBelowFrom} ${yBelowFrom - cornerSqSide}`,
+        `L ${xBelowFrom + hSqOffset} ${yBelowFrom}`,
+
+        // Horizontal line to square
+        `L ${xAboveTo - hSqOffset} ${yAboveTo}`,
+        `L ${xAboveTo} ${yAboveTo - cornerSqSide}`,
+        `L ${xAboveTo + hSqOffset} ${yAboveTo}`,
+        `L ${xAboveTo} ${yAboveTo + cornerSqSide}`,
+        `M ${xAboveTo - hSqOffset} ${yAboveTo}`,
+        `L ${xAboveTo} ${yAboveTo + cornerSqSide}`,
+
+        // End
+        `L ${xTo} ${yTo - sqSide * 3}`,
+        toSquarePath,
+      ].join(" ");
+    }
+
+    return [to, path, fromSquareMask, toSquareMask, from];
+  };
+
   export function drawLine({ from, to }: { from: HTMLElement, to: HTMLElement }) {
     const redrawLine = () => {
-      const fromRect = from.getBoundingClientRect();
-      const toRect = to.getBoundingClientRect();
-
-      // For `y` positions, add/subtract 1 to account for borders.
-      const xFrom = fromRect.left + fromRect.width / 2;
-      const yFrom = fromRect.top + scrollY + fromRect.height + 1;
-      const xTo = toRect.left + toRect.width / 2;
-      const yTo = toRect.top + scrollY + 10 - 1;
-
-      const sqSide = 4;
-      const startSqSide = sqSide - 1;
-
-      // Do not draw corners if the X positions are very close.
-      const drawStraightLine = Math.abs(xFrom - xTo) < sqSide * 3;
-
-      const fromSquarePath = squareToBottomPath(xFrom, yFrom - sqSide, startSqSide);
-      const fromSquareMask = squareToBottomPoints(xFrom, yFrom - sqSide, startSqSide);
-
-      const toSquarePath = squareToBottomPath(drawStraightLine ? xFrom : xTo, yTo - sqSide * 3, sqSide);
-      const toSquareMask = squareToBottomPoints(drawStraightLine ? xFrom : xTo, yTo - sqSide * 3, sqSide);
-
-      let path: string;
-
-      if (drawStraightLine) {
-        // Use `xFrom` instead of `xTo` since the width of `from` is likely
-        // smaller than `to`'s (because `to` has a bigger font).
-        path = [
-          fromSquarePath,
-          `L ${xFrom} ${yTo - sqSide * 3}`,
-          toSquarePath,
-        ].join(" ");
-      } else {
-        const cornerSqSide = sqSide;
-
-        const xBelowFrom = xFrom;
-        const yBelowFrom = yTo - sqSide * 5;
-
-        const xAboveTo = xTo;
-        const yAboveTo = yBelowFrom;
-
-        // Use `hSqOffset` to handle corners that either go left or right.
-        const hSqOffset = xFrom < xTo ? cornerSqSide : -cornerSqSide;
-
-        path = [
-          // Start
-          fromSquarePath,
-
-          // Line down to square
-          `L ${xBelowFrom} ${yBelowFrom - cornerSqSide}`,
-          `L ${xBelowFrom - hSqOffset} ${yBelowFrom}`,
-          `L ${xBelowFrom} ${yBelowFrom + cornerSqSide}`,
-          `L ${xBelowFrom + hSqOffset} ${yBelowFrom}`,
-          `M ${xBelowFrom} ${yBelowFrom - cornerSqSide}`,
-          `L ${xBelowFrom + hSqOffset} ${yBelowFrom}`,
-
-          // Horizontal line to square
-          `L ${xAboveTo - hSqOffset} ${yAboveTo}`,
-          `L ${xAboveTo} ${yAboveTo - cornerSqSide}`,
-          `L ${xAboveTo + hSqOffset} ${yAboveTo}`,
-          `L ${xAboveTo} ${yAboveTo + cornerSqSide}`,
-          `M ${xAboveTo - hSqOffset} ${yAboveTo}`,
-          `L ${xAboveTo} ${yAboveTo + cornerSqSide}`,
-
-          // End
-          `L ${xTo} ${yTo - sqSide * 3}`,
-          toSquarePath,
-        ].join(" ");
-      }
+      const newLine = computeLine(from, to);
 
       lines.update((lines) => {
         const newLines: Line[] = [];
 
         for (const line of lines) {
           if (line[0] === to) {
-            newLines.push([to, path, fromSquareMask, toSquareMask]);
+            newLines.push(newLine);
           } else {
             newLines.push(line);
           }
@@ -110,8 +117,7 @@
       });
     };
 
-    lines.update((lines) => [...lines, [to, "", "", ""]]);
-    redrawLine();
+    lines.update((lines) => [...lines, computeLine(from, to)]);
 
     addEventListener("resize", redrawLine, { passive: true });
 
@@ -123,10 +129,10 @@
   }
 
   export function triggerRedraw() {
-
+    lines.update((lines) => lines.map(([target,,,, source]) => computeLine(source, target)));
   }
 
-  showTranslations.subscribe(() => triggerRedraw());
+  showTranslations.subscribe(() => tick().then(() => triggerRedraw()));
 
   function pathLength(node: SVGPathElement, _: unknown, { direction }: { readonly direction: "in" | "out" | "both" }): TransitionConfig {
     const length = node.getTotalLength();

@@ -68,6 +68,7 @@
       selection = thisSelection;
     } else {
       dispatch("activeTokenClick", thisSelection);
+      selection = undefined;
     }
   } : undefined;
 

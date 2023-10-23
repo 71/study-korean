@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { onDestroy } from "svelte";
-	import { drawLine } from "./TokenLines.svelte";
+  import { onDestroy } from "svelte";
+  import { drawLine } from "./TokenLines.svelte";
 
   export let from: HTMLElement | undefined;
   export let to: HTMLElement | undefined;

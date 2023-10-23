@@ -65,7 +65,7 @@
 
   const dispatch = createEventDispatcher<{
     tokenSelected: AmbiguousTokenSelection | undefined,
-    tokenReplaced: AmbiguousTokenSelection | undefined,
+    tokenReplaced: TokenSelection | undefined,
     tokenUnselected: AmbiguousTokenSelection,
     isProminent: boolean,
   }>();
@@ -139,7 +139,7 @@
   }
 
   function replaceWith(wordId: number) {
-    dispatch("tokenReplaced", { source: inputSelection.source, tokens: [wordId] });
+    dispatch("tokenReplaced", { source: inputSelection.source, token: wordId });
   }
 </script>
 

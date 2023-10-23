@@ -63,12 +63,13 @@
     };
   } else {
     extendedSentenceSelection = undefined;
+    selections = [];
   }
 
   let selections: readonly AmbiguousTokenSelection[] = [];
   let prominentSelection: AmbiguousTokenSelection | undefined;
 
-  $: sections = extendedSentenceSelection === undefined ? selections : [
+  $: sections = extendedSentenceSelection === undefined ? [] : [
     extendedSentenceSelection, ...selections,
   ];
 
@@ -79,6 +80,7 @@
   }
 
   function updateSelection(index: number, selection: AmbiguousTokenSelection | undefined, type: UpdateType) {
+    // TODO: event is triggered twice when Replacing
     if (extendedSentenceSelection === undefined) {
       index--;
     }
@@ -86,7 +88,14 @@
       selections = selections.slice(0, index - 1);
       return;
     }
-    // TODO: handle `type === Replace`
+    if (type === UpdateType.Replace) {
+      if (index === 0) {
+        selections = [];
+      } else {
+        selections = selections.slice(index - 1);
+      }
+      return;
+    }
     // `+ 1` to include item at `index`, `- 1` to remove `sentenceSelection`.
     if ((selection?.tokens.length ?? 0) === 0) {
       selections = selections.slice(0, index + 1 - 1);
@@ -122,9 +131,9 @@
 
         <VocabularySelectorExplorer
           inputSelection={selection}
-          on:tokenReplaced={({ detail: selection }) => updateSelection(i, selection, UpdateType.Replace)}
+          on:tokenReplaced={() => updateSelection(i, undefined, UpdateType.Remove)}
           on:tokenSelected={({ detail: selection }) => updateSelection(i, selection, UpdateType.Update)}
-          on:tokenUnselected={({ detail: selection }) => updateSelection(i, selection, UpdateType.Remove)}
+          on:tokenUnselected={() => updateSelection(i, undefined, UpdateType.Remove)}
           on:isProminent={({ detail: isProminent }) => {
             if (isProminent) {
               breadcrumbs = sections.slice(0, i + 1).map((t) => `${t.tokens[0]}`);
