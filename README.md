@@ -59,8 +59,8 @@ All data is produced by the [notebook] using the specified files:
 - `data/Korean_Grammar_Sentences_by_Evita.apkg`: self-explanatory
   ([source][evita-anki])
 
-`data/kodata.rawproto` is produced by the [notebook] and its schema is available
-in [`data/data.proto`](data/data.proto). Tokenization is performed using the
+`data/kodata.binpb` is produced by the [notebook] and its schema is available in
+[`data/data.proto`](data/data.proto). Tokenization is performed using the
 [Korean morphological analyzer](https://github.com/71/kma).
 
 The notebook was also saved to [`data/notebook`](data/notebook).

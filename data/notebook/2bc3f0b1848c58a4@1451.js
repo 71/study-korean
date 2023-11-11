@@ -6920,7 +6920,7 @@ toProtobuf()
 )}
 
 function _51(download,pb,toProtobuf){return(
-download(async () => new Blob([pb.AllData.encode(toProtobuf()).finish()]), "kodata.rawproto", "Save kodata.rawproto")
+download(async () => new Blob([pb.AllData.encode(toProtobuf()).finish()]), "kodata.binpb", "Save kodata.binpb")
 )}
 
 function _52(protobuf){return(

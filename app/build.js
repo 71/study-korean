@@ -28,10 +28,6 @@ const config = {
     }),
   ],
 
-  loader: {
-    ".rawproto": "file",
-  },
-
   minify: !dev,
   sourcemap: dev ? "linked" : false,
 
