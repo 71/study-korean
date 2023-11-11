@@ -1,4 +1,5 @@
-import { DefinedWord, Word } from "../db";
+import { readable } from "svelte/store";
+import { Db, DefinedWord, Word } from "../db";
 
 /**
  * Same as `value!`, used when the null assertion operator is unavailable (e.g.
@@ -48,6 +49,12 @@ export function throttle<Args extends any[]>(
   };
 }
 
+export function awaitOr<T>(promise: T, fallback: Awaited<T>) {
+  return readable(fallback, (set) => {
+    Promise.resolve(promise).then((x) => set(x), (e) => console.error(e));
+  });
+}
+
 export function definitionsOf(word: Word | undefined): readonly DefinedWord[] {
   if (word === undefined) {
     return [];
@@ -55,10 +62,11 @@ export function definitionsOf(word: Word | undefined): readonly DefinedWord[] {
   return Object.values(word).filter((v) => typeof v === "object" && v !== null);
 }
 
-export function summarizeTranslations(word: DefinedWord): string {
+export async function summarizeTranslations(db: Db, wordId: number): Promise<string> {
+  const wordData = await db.wordById(wordId);
   const translations: string[] = [];
 
-  for (const meaning of word.meanings) {
+  for (const meaning of wordData.meanings) {
     if (meaning.translation == null || meaning.translation.length === 0) {
       continue;
     }

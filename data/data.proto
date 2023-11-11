@@ -110,16 +110,58 @@ message Example {
   optional int32 sound_id = 6;
 }
 
-message AllData {
-  message PartOfSpeech {
-    string id = 1;  // English identifier as used in Word
-    string ko = 2;
-    string en = 3;
-    string en_alt = 4;
-    int32 word_id = 5;
-  }
+message PartOfSpeech {
+  string id = 1;  // English identifier as used in Word
+  string ko = 2;
+  string en = 3;
+  string en_alt = 4;
+  int32 word_id = 5;
+}
 
+message AllData {
   repeated Word words = 1;
   repeated Example examples = 2;
   repeated PartOfSpeech pos = 3;
+}
+
+message Index {
+  message WordEntry {
+    string text = 1;
+    repeated int32 word_ids = 2;
+    repeated string origins = 3;
+  }
+
+  message WordChunkEntry {
+    string chunk = 1;
+    repeated WordEntry entries = 2;
+  }
+
+  message ExampleEntry {
+  }
+
+  message ExampleChunkEntry {
+    string chunk = 1;
+    repeated ExampleEntry entries = 2;
+  }
+
+  repeated PartOfSpeech pos = 1;
+  repeated WordChunkEntry words = 2;
+  repeated ExampleChunkEntry examples = 3;
+}
+
+message TranslationIndex {
+  message Entry {
+    repeated string translations = 1;
+    int32 word_id = 2;
+  }
+
+  repeated Entry entries = 1;
+}
+
+message WordChunk {
+  repeated Word words = 1;
+}
+
+message ExampleChunk {
+  repeated Example examples = 1;
 }

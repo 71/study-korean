@@ -3,7 +3,7 @@
 
 	import Token, { AmbiguousTokenSelection } from "./Token.svelte";
 	import type { Db } from "../db";
-	import { definitionsOf, throttle } from "../utils";
+	import { throttle } from "../utils";
 	import { resizeTokens } from "../utils/tokens";
 	import { flattenSelectionRanges, resolveSelectionRanges, withKey } from "../utils/ui";
 
@@ -43,7 +43,7 @@
           okt.tokenize(okt.normalize(sentenceOrPlaceholder))
             .map((token) => ({
               text: token.text,
-              wordIds: definitionsOf(db!.wordByText(token.stem ?? token.text)).map((word) => word.wordId),
+              wordIds: db!.wordIdsByText(token.stem ?? token.text),
             })),
         );
       case Type.Foreign:
@@ -102,10 +102,6 @@
     } else {
       suggestions = db.wordsStartingWith(lastWord[0], { limit: 100 });
     }
-  }
-
-  $: if (type === Type.Foreign && sentence.length > 0) {
-    // TODO: selection = { source: sentenceElement, tokens: [sentence] };
   }
 
   onMount(() => {

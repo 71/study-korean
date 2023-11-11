@@ -52,14 +52,15 @@
 
 <script lang="ts">
 	import { createEventDispatcher, onMount } from "svelte";
-	import { db, showTranslations, uiWordIds } from "../store";
+	import { db, showTranslations } from "../store";
 	import { withKey } from "../utils/ui";
 
 	import MeaningViewer from "./MeaningViewer.svelte";
   import Token, { AmbiguousTokenSelection, TokenSelection } from "./Token.svelte";
 	import Line from "./Line.svelte";
-	import { nn, summarizeTranslations } from "../utils";
+	import { awaitOr, nn, summarizeTranslations } from "../utils";
 	import { Meaning } from "../db";
+	import { uiWordIds } from "../generated";
 
   export let inputSelection: TokenSelection;
 
@@ -73,9 +74,9 @@
   const dispatchTokenUnselected = (e: CustomEvent<AmbiguousTokenSelection>) => dispatch("tokenUnselected", e.detail);
 
   $: token = inputSelection.token;
-  $: tokenData = typeof token === "string" ? undefined : $db.wordById(token);
-  $: tokenText = typeof token === "string" ? token : tokenData!.text;
-  $: homographs = tokenData !== undefined ? $db.homographsOf(tokenData) : [];
+  $: tokenData = awaitOr(typeof token === "string" ? undefined : $db.wordById(token), undefined);
+  $: tokenText = typeof token === "string" ? token : $tokenData?.text ?? $db.wordTextById(token);
+  $: homographs = $tokenData !== undefined ? $db.homographsOf($tokenData) : [];
 
   $: type = typeof token === "number" || /\p{Script=Hangul}/u.test(token)
     ? Type.Hangul
@@ -86,10 +87,10 @@
   let wordElement: WordElement;
 
   $: tokenElement = wordElement?.querySelector(".text-box") as HTMLElement;
-  $: koPos = (tokenData !== undefined ? $db.posKoreanText(tokenData.pos) : typeToPos[type]) as keyof typeof $uiWordIds;
+  $: koPos = ($tokenData !== undefined ? $db.posKoreanText($tokenData.pos) : typeToPos[type]) as keyof typeof uiWordIds;
 
-  $: meanings = type === Type.Hangul ? tokenData?.meanings as Meaning[] | undefined : undefined;
-  $: mostCommon = type === Type.Hangul ? $db.wordByText(tokenText)?.mostCommon : undefined;
+  $: meanings = type === Type.Hangul ? $tokenData?.meanings as Meaning[] | undefined : undefined;
+  $: mostCommon = awaitOr(type === Type.Hangul ? $db.wordByText(tokenText).then((x) => x?.mostCommon) : undefined, undefined);
   $: [wordsWithHan, hanReadings] = type === Type.Han ? $db.wordsWithHan(tokenText) : [undefined, undefined];
 
   onMount(() => {
@@ -155,18 +156,18 @@
         role="button"
         tabindex="0"
       >
-        <div class="pronunciation" class:hidden={(tokenData?.pronunciation ?? "") === "" || nn(tokenData).pronunciation === tokenText}>
-          {tokenData?.pronunciation}
+        <div class="pronunciation" class:hidden={($tokenData?.pronunciation ?? "") === "" || nn($tokenData).pronunciation === tokenText}>
+          {$tokenData?.pronunciation}
         </div>
 
         <span class="text">{tokenText}</span>
       </div>
 
-      <div class="info" class:dense={tokenData?.origin != null && mostCommon != null}>
-        {#if tokenData?.origin != null}
+      <div class="info" class:dense={$tokenData?.origin != null && $mostCommon != null}>
+        {#if $tokenData?.origin != null}
           <div>
             <em class="hanja">
-              {#each tokenData.origin as character}
+              {#each $tokenData.origin as character}
                 <Token text={character} wordIds={[]} bind:selection={outputSelection}
                        on:activeTokenClick={dispatchTokenUnselected} />
               {/each}
@@ -187,7 +188,7 @@
 
         <div class="pos-picker">
           <em>
-            <Token text={koPos} wordIds={[$uiWordIds[koPos].wordId]} bind:selection={outputSelection}
+            <Token text={koPos} wordIds={[uiWordIds[koPos]]} bind:selection={outputSelection}
                    on:activeTokenClick={dispatchTokenUnselected} />
           </em>
 
@@ -201,15 +202,15 @@
           {/each}
         </div>
 
-        {#if mostCommon != null}
+        {#if $mostCommon != null}
           <div>
-            <Token text="사용" wordIds={[$uiWordIds.사용.wordId]} bind:selection={outputSelection}
+            <Token text="사용" wordIds={[uiWordIds.사용]} bind:selection={outputSelection}
                    on:activeTokenClick={dispatchTokenUnselected} />
-            <Token text="빈도" wordIds={[$uiWordIds.빈도.wordId]} bind:selection={outputSelection}
+            <Token text="빈도" wordIds={[uiWordIds.빈도]} bind:selection={outputSelection}
                    on:activeTokenClick={dispatchTokenUnselected} />수
-            <em>{mostCommon}</em>
+            <em>{$mostCommon}</em>
             <!--nobr-->
-            <Token text="위" wordIds={[$uiWordIds.위.wordId]} bind:selection={outputSelection}
+            <Token text="위" wordIds={[uiWordIds.위]} bind:selection={outputSelection}
                    on:activeTokenClick={dispatchTokenUnselected} />
           </div>
         {/if}
@@ -231,7 +232,7 @@
       {#each nn(wordsWithHan) as word}
         <tr>
           <td>
-            {#each nn(word.origin) as character}
+            {#each word.han as character}
               <!--nobr-->
               {#if character === tokenText}
                 <!--nobr-->
@@ -252,13 +253,17 @@
           </td>
 
           <td>
-            <Token text={word.text} wordIds={[word.wordId]} bind:selection={outputSelection}
+            <Token text={word.hangul} wordIds={[word.id]} bind:selection={outputSelection}
                    on:activeTokenClick={dispatchTokenUnselected} />
           </td>
 
           <td>
             {#if $showTranslations}
-              {summarizeTranslations(word)}
+              {#await summarizeTranslations($db, word.id)}
+                ...
+              {:then translations} 
+                {translations}
+              {/await}
             {/if}
           </td>
         </tr>
@@ -266,17 +271,19 @@
     </table>
   {:else}
     <table class="english" cellspacing=0>
-      {#each $db.wordsWithEnglishTranslationIncluding(tokenText) as word}
-        <tr>
-          <td>
-            <Token text={word.text} wordIds={[word.wordId]} bind:selection={outputSelection}
-                   on:activeTokenClick={dispatchTokenUnselected} />
-          </td>
-          <td>
-            {nn(word.meanings).find((m) => nn(m.translation).includes(tokenText))?.translation}
-          </td>
-        </tr>
-      {/each}
+      {#await $db.wordsWithEnglishTranslationStartingWith(tokenText) then words}
+        {#each words as [en, ko, id]}
+          <tr>
+            <td>
+              <Token text={ko} wordIds={[id]} bind:selection={outputSelection}
+                     on:activeTokenClick={dispatchTokenUnselected} />
+            </td>
+            <td>
+              {en}
+            </td>
+          </tr>
+        {/each}
+      {/await}
     </table>
   {/if}
 </div>

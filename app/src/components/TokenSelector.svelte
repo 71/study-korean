@@ -4,7 +4,6 @@
 	import { db } from "../store";
 	import Line from "./Line.svelte";
 	import { triggerRedraw } from "./TokenLines.svelte";
-	import { definitionsOf } from "../utils";
 
   export let inputSelection: AmbiguousTokenSelection;
   export let selectedSelection: TokenSelection;
@@ -19,11 +18,11 @@
     }
 
     const selectedToken = inputSelection.tokens[selectedTokenIndex];
-    const selectedData = typeof selectedToken === "string" ? definitionsOf($db.wordByText(selectedToken)) : [];
+    const selectedData = typeof selectedToken === "string" ? $db.wordIdsByText(selectedToken) : [];
 
     selectedSelection = {
       source: selectedElement,
-      token: selectedData.length > 0 ? selectedData[0].wordId : selectedToken,
+      token: selectedData.length > 0 ? selectedData[0] : selectedToken,
     };
   }
 
@@ -41,7 +40,7 @@
         role="button"
         tabindex=0
       >
-        {typeof token === "string" ? token : $db.wordById(token).text}
+        {typeof token === "string" ? token : $db.wordTextById(token)}
       </span>
     {/each}
   </span>

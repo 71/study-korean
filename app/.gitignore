@@ -5,3 +5,4 @@ dist/*
 !dist/manifest.webmanifest
 src/data-proto.d.ts
 src/data-proto.js
+src/generated.ts

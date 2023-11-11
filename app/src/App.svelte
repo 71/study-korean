@@ -51,7 +51,7 @@
 
   $: if (db !== undefined && sentenceSelection !== undefined) {
     const tokensText = sentenceSelection.tokens.map((token) =>
-      typeof token === "string" ? token : db!.wordById(token).text,
+      typeof token === "string" ? token : db!.wordTextById(token),
     );
 
     extendedSentenceSelection = {

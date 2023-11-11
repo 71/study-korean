@@ -19,7 +19,7 @@
     const dedupTokens: (string | number)[] = [];
 
     for (const token of inputSelection.tokens) {
-      const tokenText = typeof token === "string" ? token : $db.wordById(token).text;
+      const tokenText = typeof token === "string" ? token : $db.wordTextById(token);
       if (!tokensText.includes(tokenText)) {
         tokensText.push(tokenText);
         dedupTokens.push(token);

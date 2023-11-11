@@ -1,3 +1,5 @@
+import { protobufFileNames } from "./generated";
+
 export {};
 
 declare const self: ServiceWorkerGlobalScope;
@@ -8,7 +10,7 @@ const CURRENT_CACHES = {
 };
 
 const fetchFromCache = async (cacheName: keyof typeof CURRENT_CACHES, request: Request) => {
-  const cache = await caches.open(cacheName);
+  const cache = await caches.open(CURRENT_CACHES[cacheName]);
   const matched = await cache.match(request);
 
   if (matched !== undefined) {
@@ -39,13 +41,37 @@ self.addEventListener("activate", (event) => {
       ),
     ),
   );
+
+  // Update cached protobufs.
+  event.waitUntil(
+    caches.open(CURRENT_CACHES.db).then(async (cache) => {
+      const protobufPaths = new Set(protobufFileNames.map((p) => `/data/${p}.binpb`));
+      const existingRequests = await cache.keys();
+
+      const promises: Promise<unknown>[] = [];
+
+      // Remove cached protobufs that are no longer needed.
+      for (const request of existingRequests) {
+        const path = new URL(request.url).pathname;
+
+        if (!protobufPaths.delete(path)) {
+          promises.push(cache.delete(request));
+        }
+      }
+
+      // Add protobufs not yet cached.
+      promises.push(cache.addAll([...protobufPaths]));
+
+      await Promise.all(promises);
+    }),
+  );
 });
 
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
   const path = requestUrl.pathname;
 
-  if (path.startsWith("kodata-") && path.endsWith(".rawproto")) {
+  if (path.startsWith("/data/") && path.endsWith(".binpb")) {
     event.respondWith(fetchFromCache("db", event.request));
   } else if (/^\/[\w-\.]+\.[a-z]+$/.test(path) || requestUrl.host !== location.host) {
     event.respondWith(fetchFromCache("assets", event.request));

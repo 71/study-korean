@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Meaning } from "../db";
-	import { showTranslations, uiWordIds } from "../store";
+	import { uiWordIds } from "../generated";
+	import { showTranslations } from "../store";
 	import { nn } from "../utils";
 	import { resizeTokens } from "../utils/tokens";
 	import Token, { AmbiguousTokenSelection } from "./Token.svelte";
@@ -34,7 +35,7 @@
     {#if $showTranslations}
       <tr class="translation">
         <td class="header">
-          <Token text="번역" wordIds={[$uiWordIds.번역.wordId]} bind:selection />
+          <Token text="번역" wordIds={[uiWordIds.번역]} bind:selection />
         </td>
         <td>
           {#each meaning.translation?.split(";") ?? "" as translation, i}
@@ -49,7 +50,7 @@
 
     <tr class="definition">
       <td class="header">
-        <Token text="정의" wordIds={[$uiWordIds.정의.wordId]} bind:selection />
+        <Token text="정의" wordIds={[uiWordIds.정의]} bind:selection />
       </td>
       <td>
         {#each resizedTokens ?? [] as { text, wordIds }}
@@ -61,7 +62,7 @@
     {#if $showTranslations && meaning.definitionTranslation != null}
       <tr class="definition-translation">
         <td class="header">
-          <Token text="번역" wordIds={[$uiWordIds.번역.wordId]} bind:selection />
+          <Token text="번역" wordIds={[uiWordIds.번역]} bind:selection />
         </td>
         <td>
           {meaning.definitionTranslation}
@@ -75,7 +76,7 @@
       {#each relatedWords as [{ text, wordIds }, type]}
         <div class="pair">
           <Token text={nn(text)} wordIds={wordIds ?? emptyList} bind:selection />
-          <Token text={type} wordIds={[$uiWordIds[type].wordId]} bind:selection />
+          <Token text={type} wordIds={[uiWordIds[type]]} bind:selection />
         </div>
       {/each}
     </div>

@@ -6,6 +6,7 @@
     "dev": "node build.js --dev",
     "build": "node build.js",
     "build:pb": "pbjs -t static-module -w es6 -o src/data-proto.js ../data/data.proto && pbts src/data-proto.js -o src/data-proto.d.ts",
+    "build:data": "node build-data.js",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",

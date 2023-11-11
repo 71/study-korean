@@ -60,7 +60,7 @@
   let element: HTMLElement;
   let thisSelection: AmbiguousTokenSelection;
 
-  $: selectable = wordIds.length > 0 || /^[\p{Script=Han}\p{Script=Hangul}]+$/u.test(text);
+  $: selectable = wordIds.length > 0 || /^[\p{Script=Han}\p{Script=Hangul}]+$|^[a-zA-Z]+$/u.test(text);
   $: thisSelection = { source: element, tokens: wordIds.length === 0 ? [text] : wordIds };
   $: selected = selection === thisSelection;
   $: selectionHandler = selectable ? () => {
