@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { RouteKind, dbPromise, navigate, route, showTranslations } from "./store";
-	import { onMount } from "svelte";
-	import { Db } from "./db";
-	import SentenceInput from "./components/SentenceInput.svelte";
-	import VocabularySelectorExplorer from "./components/VocabularySelectorExplorer.svelte";
-	import TokenLines from "./components/TokenLines.svelte";
-	import { AmbiguousTokenSelection } from "./components/Token.svelte";
-	import Separator from "./components/Separator.svelte";
+  import { RouteKind, dbPromise, navigate, route, showTranslations } from "./store";
+  import { onMount } from "svelte";
+  import { Db } from "./db";
+  import SentenceInput from "./components/SentenceInput.svelte";
+  import VocabularySelectorExplorer from "./components/VocabularySelectorExplorer.svelte";
+  import TokenLines from "./components/TokenLines.svelte";
+  import { AmbiguousTokenSelection } from "./components/Token.svelte";
+  import Separator from "./components/Separator.svelte";
 
   // Loading data.
   const oktPromise = import("oktjs");
@@ -14,13 +14,14 @@
   let okt: typeof import("oktjs") | undefined;
   let db: Db | undefined;
 
-  dbPromise.then((_) => db = _);
-  oktPromise.then((_) => okt = _);
+  dbPromise.then((_) => (db = _));
+  oktPromise.then((_) => (okt = _));
 
   // Sentence input.
-  let sentence = $route.kind === RouteKind.SentenceExplorer
-    ? $route.sentence
-    : localStorage.getItem("searchSentence") ?? "안녕하세요";
+  let sentence =
+    $route.kind === RouteKind.SentenceExplorer
+      ? $route.sentence
+      : localStorage.getItem("searchSentence") ?? "안녕하세요";
 
   $: localStorage.setItem("searchSentence", sentence.trim());
 
@@ -39,7 +40,7 @@
   );
 
   onMount(() => {
-    const scrollEventListener = () => displayBreadcrumbs = scrollY > 50;
+    const scrollEventListener = () => (displayBreadcrumbs = scrollY > 50);
 
     document.addEventListener("scroll", scrollEventListener, { passive: true });
 
@@ -56,10 +57,7 @@
 
     extendedSentenceSelection = {
       source: sentenceSelection.source,
-      tokens: [
-        ...sentenceSelection.tokens,
-        ...suggestions.filter((x) => !tokensText.includes(x)),
-      ],
+      tokens: [...sentenceSelection.tokens, ...suggestions.filter((x) => !tokensText.includes(x))],
     };
   } else {
     extendedSentenceSelection = undefined;
@@ -69,9 +67,8 @@
   let selections: readonly AmbiguousTokenSelection[] = [];
   let prominentSelection: AmbiguousTokenSelection | undefined;
 
-  $: sections = extendedSentenceSelection === undefined ? [] : [
-    extendedSentenceSelection, ...selections,
-  ];
+  $: sections =
+    extendedSentenceSelection === undefined ? [] : [extendedSentenceSelection, ...selections];
 
   const enum UpdateType {
     Remove,
@@ -79,7 +76,11 @@
     Update,
   }
 
-  function updateSelection(index: number, selection: AmbiguousTokenSelection | undefined, type: UpdateType) {
+  function updateSelection(
+    index: number,
+    selection: AmbiguousTokenSelection | undefined,
+    type: UpdateType,
+  ) {
     // TODO: event is triggered twice when Replacing
     if (extendedSentenceSelection === undefined) {
       index--;
@@ -110,9 +111,7 @@
 <TokenLines />
 
 <div class="translations-toggle">
-  <button on:click={() => showTranslations.update((v) => !v)}>
-    Toggle translations
-  </button>
+  <button on:click={() => showTranslations.update((v) => !v)}> Toggle translations </button>
 </div>
 
 <main>
@@ -124,7 +123,9 @@
     <div class="sections" bind:this={sectionsElement}>
       {#each sections as selection, i (selection)}
         {#if i > 0}
-          <Separator on:click={() => sectionsElement.children[i - 1].scrollIntoView({ behavior: "smooth" })} />
+          <Separator
+            on:click={() => sectionsElement.children[i - 1].scrollIntoView({ behavior: "smooth" })}
+          />
         {:else}
           <div role="separator" style="height: 1em;" />
         {/if}
@@ -132,7 +133,8 @@
         <VocabularySelectorExplorer
           inputSelection={selection}
           on:tokenReplaced={() => updateSelection(i, undefined, UpdateType.Remove)}
-          on:tokenSelected={({ detail: selection }) => updateSelection(i, selection, UpdateType.Update)}
+          on:tokenSelected={({ detail: selection }) =>
+            updateSelection(i, selection, UpdateType.Update)}
           on:tokenUnselected={() => updateSelection(i, undefined, UpdateType.Remove)}
           on:isProminent={({ detail: isProminent }) => {
             if (isProminent) {
@@ -142,7 +144,8 @@
               breadcrumbs = [];
               prominentSelection = undefined;
             }
-          }} />
+          }}
+        />
       {/each}
     </div>
   {:catch error}

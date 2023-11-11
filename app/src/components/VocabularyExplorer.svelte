@@ -6,40 +6,43 @@
   const visibleWordElements = new Set<WordElement>();
   let lastIntersecting: WordElement | undefined;
 
-  const intersectionObserver = new IntersectionObserver((entries) => {
-    // Update list of visible elements.
-    for (const entry of entries) {
-      const wordElement = entry.target as WordElement;
+  const intersectionObserver = new IntersectionObserver(
+    (entries) => {
+      // Update list of visible elements.
+      for (const entry of entries) {
+        const wordElement = entry.target as WordElement;
 
-      if (entry.isIntersecting) {
-        visibleWordElements.add(wordElement);
-      } else {
-        visibleWordElements.delete(wordElement);
+        if (entry.isIntersecting) {
+          visibleWordElements.add(wordElement);
+        } else {
+          visibleWordElements.delete(wordElement);
+        }
       }
-    }
 
-    // Find highest element that starts before the top of the screen.
-    const maxOffsetTop = scrollY;
+      // Find highest element that starts before the top of the screen.
+      const maxOffsetTop = scrollY;
 
-    let bestElement: WordElement | undefined;
+      let bestElement: WordElement | undefined;
 
-    for (const visibleElement of visibleWordElements) {
-      if (visibleElement.offsetTop <= maxOffsetTop) {
-        bestElement = visibleElement;
-        break;
+      for (const visibleElement of visibleWordElements) {
+        if (visibleElement.offsetTop <= maxOffsetTop) {
+          bestElement = visibleElement;
+          break;
+        }
       }
-    }
 
-    // Update top-most element.
-    if (bestElement !== lastIntersecting) {
-      lastIntersecting?.notifyTopWord!(false);
-      lastIntersecting = bestElement;
-      lastIntersecting?.notifyTopWord!(true);
-    }
-  }, {
-    rootMargin: "0px",
-    threshold: 0,  // Elements can be very large, so a very small threshold is needed.
-  });
+      // Update top-most element.
+      if (bestElement !== lastIntersecting) {
+        lastIntersecting?.notifyTopWord!(false);
+        lastIntersecting = bestElement;
+        lastIntersecting?.notifyTopWord!(true);
+      }
+    },
+    {
+      rootMargin: "0px",
+      threshold: 0, // Elements can be very large, so a very small threshold is needed.
+    },
+  );
 
   const enum Type {
     Hangul,
@@ -51,47 +54,55 @@
 </script>
 
 <script lang="ts">
-	import { createEventDispatcher, onMount } from "svelte";
-	import { db, showTranslations } from "../store";
-	import { withKey } from "../utils/ui";
+  import { createEventDispatcher, onMount } from "svelte";
+  import { db, showTranslations } from "../store";
+  import { withKey } from "../utils/ui";
 
-	import MeaningViewer from "./MeaningViewer.svelte";
+  import MeaningViewer from "./MeaningViewer.svelte";
   import Token, { AmbiguousTokenSelection, TokenSelection } from "./Token.svelte";
-	import Line from "./Line.svelte";
-	import { awaitOr, nn, summarizeTranslations } from "../utils";
-	import { Meaning } from "../db";
-	import { uiWordIds } from "../generated";
+  import Line from "./Line.svelte";
+  import { awaitOr, nn, summarizeTranslations } from "../utils";
+  import { Meaning } from "../db";
+  import { uiWordIds } from "../generated";
 
   export let inputSelection: TokenSelection;
 
   const dispatch = createEventDispatcher<{
-    tokenSelected: AmbiguousTokenSelection | undefined,
-    tokenReplaced: TokenSelection | undefined,
-    tokenUnselected: AmbiguousTokenSelection,
-    isProminent: boolean,
+    tokenSelected: AmbiguousTokenSelection | undefined;
+    tokenReplaced: TokenSelection | undefined;
+    tokenUnselected: AmbiguousTokenSelection;
+    isProminent: boolean;
   }>();
 
-  const dispatchTokenUnselected = (e: CustomEvent<AmbiguousTokenSelection>) => dispatch("tokenUnselected", e.detail);
+  const dispatchTokenUnselected = (e: CustomEvent<AmbiguousTokenSelection>) =>
+    dispatch("tokenUnselected", e.detail);
 
   $: token = inputSelection.token;
   $: tokenData = awaitOr(typeof token === "string" ? undefined : $db.wordById(token), undefined);
   $: tokenText = typeof token === "string" ? token : $tokenData?.text ?? $db.wordTextById(token);
   $: homographs = $tokenData !== undefined ? $db.homographsOf($tokenData) : [];
 
-  $: type = typeof token === "number" || /\p{Script=Hangul}/u.test(token)
-    ? Type.Hangul
-    : /^\p{Script=Han}$/u.test(token)
+  $: type =
+    typeof token === "number" || /\p{Script=Hangul}/u.test(token)
+      ? Type.Hangul
+      : /^\p{Script=Han}$/u.test(token)
       ? Type.Han
       : Type.Foreign;
 
   let wordElement: WordElement;
 
   $: tokenElement = wordElement?.querySelector(".text-box") as HTMLElement;
-  $: koPos = ($tokenData !== undefined ? $db.posKoreanText($tokenData.pos) : typeToPos[type]) as keyof typeof uiWordIds;
+  $: koPos = (
+    $tokenData !== undefined ? $db.posKoreanText($tokenData.pos) : typeToPos[type]
+  ) as keyof typeof uiWordIds;
 
-  $: meanings = type === Type.Hangul ? $tokenData?.meanings as Meaning[] | undefined : undefined;
-  $: mostCommon = awaitOr(type === Type.Hangul ? $db.wordByText(tokenText).then((x) => x?.mostCommon) : undefined, undefined);
-  $: [wordsWithHan, hanReadings] = type === Type.Han ? $db.wordsWithHan(tokenText) : [undefined, undefined];
+  $: meanings = type === Type.Hangul ? ($tokenData?.meanings as Meaning[] | undefined) : undefined;
+  $: mostCommon = awaitOr(
+    type === Type.Hangul ? $db.wordByText(tokenText).then((x) => x?.mostCommon) : undefined,
+    undefined,
+  );
+  $: [wordsWithHan, hanReadings] =
+    type === Type.Han ? $db.wordsWithHan(tokenText) : [undefined, undefined];
 
   onMount(() => {
     Object.defineProperty(wordElement, "notifyTopWord", {
@@ -115,26 +126,26 @@
     const utterance = new SpeechSynthesisUtterance(tokenText);
 
     switch (type) {
-    case Type.Hangul:
-      utterance.lang = "ko-KR";
-      break;
-    case Type.Foreign:
-      utterance.lang = "en-US";
-      break;
-    case Type.Han:
-      // When tested, Chrome did not read the Han token aloud when clicked.
-      //
-      // We _could_ use `lang = "zh-CN"`, but this pronunciation is likely very different
-      // from the Korean one so instead we don't do anything.
-      if (hanReadings!.length === 0) {
-        return;
-      }
+      case Type.Hangul:
+        utterance.lang = "ko-KR";
+        break;
+      case Type.Foreign:
+        utterance.lang = "en-US";
+        break;
+      case Type.Han:
+        // When tested, Chrome did not read the Han token aloud when clicked.
+        //
+        // We _could_ use `lang = "zh-CN"`, but this pronunciation is likely very different
+        // from the Korean one so instead we don't do anything.
+        if (hanReadings!.length === 0) {
+          return;
+        }
 
-      utterance.lang = "ko-KR";
-      utterance.text = hanReadings![0];
-      break;
+        utterance.lang = "ko-KR";
+        utterance.text = hanReadings![0];
+        break;
     }
-    utterance.rate = .85;
+    utterance.rate = 0.85;
 
     speechSynthesis.speak(utterance);
   }
@@ -156,7 +167,11 @@
         role="button"
         tabindex="0"
       >
-        <div class="pronunciation" class:hidden={($tokenData?.pronunciation ?? "") === "" || nn($tokenData).pronunciation === tokenText}>
+        <div
+          class="pronunciation"
+          class:hidden={($tokenData?.pronunciation ?? "") === "" ||
+            nn($tokenData).pronunciation === tokenText}
+        >
           {$tokenData?.pronunciation}
         </div>
 
@@ -168,8 +183,12 @@
           <div>
             <em class="hanja">
               {#each $tokenData.origin as character}
-                <Token text={character} wordIds={[]} bind:selection={outputSelection}
-                       on:activeTokenClick={dispatchTokenUnselected} />
+                <Token
+                  text={character}
+                  wordIds={[]}
+                  bind:selection={outputSelection}
+                  on:activeTokenClick={dispatchTokenUnselected}
+                />
               {/each}
             </em>
           </div>
@@ -188,8 +207,12 @@
 
         <div class="pos-picker">
           <em>
-            <Token text={koPos} wordIds={[uiWordIds[koPos]]} bind:selection={outputSelection}
-                   on:activeTokenClick={dispatchTokenUnselected} />
+            <Token
+              text={koPos}
+              wordIds={[uiWordIds[koPos]]}
+              bind:selection={outputSelection}
+              on:activeTokenClick={dispatchTokenUnselected}
+            />
           </em>
 
           {#each homographs as homograph}
@@ -197,21 +220,33 @@
               on:click={() => replaceWith(homograph.wordId)}
               on:keypress={withKey("Space", () => replaceWith(homograph.wordId))}
               role="button"
-              tabindex=0
-            >{$db.posKoreanText(homograph.pos)}</span>
+              tabindex="0">{$db.posKoreanText(homograph.pos)}</span
+            >
           {/each}
         </div>
 
         {#if $mostCommon != null}
           <div>
-            <Token text="사용" wordIds={[uiWordIds.사용]} bind:selection={outputSelection}
-                   on:activeTokenClick={dispatchTokenUnselected} />
-            <Token text="빈도" wordIds={[uiWordIds.빈도]} bind:selection={outputSelection}
-                   on:activeTokenClick={dispatchTokenUnselected} />수
+            <Token
+              text="사용"
+              wordIds={[uiWordIds.사용]}
+              bind:selection={outputSelection}
+              on:activeTokenClick={dispatchTokenUnselected}
+            />
+            <Token
+              text="빈도"
+              wordIds={[uiWordIds.빈도]}
+              bind:selection={outputSelection}
+              on:activeTokenClick={dispatchTokenUnselected}
+            />수
             <em>{$mostCommon}</em>
             <!--nobr-->
-            <Token text="위" wordIds={[uiWordIds.위]} bind:selection={outputSelection}
-                   on:activeTokenClick={dispatchTokenUnselected} />
+            <Token
+              text="위"
+              wordIds={[uiWordIds.위]}
+              bind:selection={outputSelection}
+              on:activeTokenClick={dispatchTokenUnselected}
+            />
           </div>
         {/if}
       </div>
@@ -228,7 +263,7 @@
       <MeaningViewer {meaning} bind:selection={outputSelection} />
     {/each}
   {:else if type === Type.Han}
-    <table class="hanja" cellspacing=0>
+    <table class="hanja" cellspacing="0">
       {#each nn(wordsWithHan) as word}
         <tr>
           <td>
@@ -240,8 +275,12 @@
                 <!--nobr-->
               {:else if /^\p{Script=Han}$/u.test(character)}
                 <!--nobr-->
-                <Token text={character} wordIds={[]} bind:selection={outputSelection}
-                       on:activeTokenClick={dispatchTokenUnselected} />
+                <Token
+                  text={character}
+                  wordIds={[]}
+                  bind:selection={outputSelection}
+                  on:activeTokenClick={dispatchTokenUnselected}
+                />
                 <!--nobr-->
               {:else}
                 <!--nobr-->
@@ -253,15 +292,19 @@
           </td>
 
           <td>
-            <Token text={word.hangul} wordIds={[word.id]} bind:selection={outputSelection}
-                   on:activeTokenClick={dispatchTokenUnselected} />
+            <Token
+              text={word.hangul}
+              wordIds={[word.id]}
+              bind:selection={outputSelection}
+              on:activeTokenClick={dispatchTokenUnselected}
+            />
           </td>
 
           <td>
             {#if $showTranslations}
               {#await summarizeTranslations($db, word.id)}
                 ...
-              {:then translations} 
+              {:then translations}
                 {translations}
               {/await}
             {/if}
@@ -270,13 +313,17 @@
       {/each}
     </table>
   {:else}
-    <table class="english" cellspacing=0>
+    <table class="english" cellspacing="0">
       {#await $db.wordsWithEnglishTranslationStartingWith(tokenText) then words}
         {#each words as [en, ko, id]}
           <tr>
             <td>
-              <Token text={ko} wordIds={[id]} bind:selection={outputSelection}
-                     on:activeTokenClick={dispatchTokenUnselected} />
+              <Token
+                text={ko}
+                wordIds={[id]}
+                bind:selection={outputSelection}
+                on:activeTokenClick={dispatchTokenUnselected}
+              />
             </td>
             <td>
               {en}
@@ -299,7 +346,7 @@
     margin-bottom: 1.4em;
 
     & > .info {
-      margin-left: .4em;
+      margin-left: 0.4em;
       flex: 1;
       font-size: 1.7em;
       font-weight: 200;
@@ -334,7 +381,7 @@
       font-family: var(--title-font-family);
       font-size: 4em;
       display: block;
-      margin: .1em .3em;
+      margin: 0.1em 0.3em;
 
       @media (max-width: 500px) {
         & {
@@ -350,7 +397,7 @@
       border: 1px solid color-mix(in srgb, var(--fg-primary) 30%, transparent);
       background-color: var(--bg-accent-1);
       font-size: 1.3em;
-      padding: .1em .4em;
+      padding: 0.1em 0.4em;
       transform: translate(0.3em, 0.9em);
 
       &.hidden {
@@ -359,7 +406,7 @@
 
       @media (max-width: 500px) {
         & {
-          font-size: .9em;
+          font-size: 0.9em;
         }
       }
     }
@@ -368,7 +415,7 @@
   .info {
     @media (max-width: 500px) {
       & {
-        font-size: 1.1em!important;
+        font-size: 1.1em !important;
       }
     }
 
@@ -405,7 +452,7 @@
     }
 
     @media (max-width: 500px) {
-      font-size: .9em;
+      font-size: 0.9em;
     }
   }
 
@@ -415,12 +462,12 @@
 
   .separator-wrapper {
     background-color: var(--background);
-    padding: .1em 0;
-    margin: .4em 0;
+    padding: 0.1em 0;
+    margin: 0.4em 0;
   }
 
   .pos-picker > span {
-    margin-left: .5em;
+    margin-left: 0.5em;
   }
 
   hr {

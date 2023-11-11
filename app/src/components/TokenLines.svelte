@@ -1,29 +1,37 @@
 <script lang="ts" context="module">
-	import { writable } from "svelte/store";
-	import { TransitionConfig } from "svelte/transition";
-	import { showTranslations } from "../store";
-	import { tick } from "svelte";
+  import { writable } from "svelte/store";
+  import { TransitionConfig } from "svelte/transition";
+  import { showTranslations } from "../store";
+  import { tick } from "svelte";
 
-  type Line = readonly [target: HTMLElement, pathData: string, fromMask: string, toMask: string, source: HTMLElement];
+  type Line = readonly [
+    target: HTMLElement,
+    pathData: string,
+    fromMask: string,
+    toMask: string,
+    source: HTMLElement,
+  ];
 
   const lines = writable<readonly Line[]>([]);
 
-  const squareToBottomPath = (topX: number, topY: number, side: number) => [
-    `M ${topX} ${topY}`,
-    `L ${topX - side} ${topY + side}`,
-    `L ${topX} ${topY + side * 2}`,
-    `M ${topX} ${topY}`,
-    `L ${topX + side} ${topY + side}`,
-    `L ${topX} ${topY + side * 2}`,
-  ].join(" ");
+  const squareToBottomPath = (topX: number, topY: number, side: number) =>
+    [
+      `M ${topX} ${topY}`,
+      `L ${topX - side} ${topY + side}`,
+      `L ${topX} ${topY + side * 2}`,
+      `M ${topX} ${topY}`,
+      `L ${topX + side} ${topY + side}`,
+      `L ${topX} ${topY + side * 2}`,
+    ].join(" ");
 
-  const squareToBottomPoints = (topX: number, topY: number, side: number) => [
-    // Add/subtract 1 to account for borders.
-    `${topX} ${topY + 1}`,
-    `${topX - side + 1} ${topY + side}`,
-    `${topX} ${topY + side * 2 - 1}`,
-    `${topX + side - 1} ${topY + side}`,
-  ].join(" ");
+  const squareToBottomPoints = (topX: number, topY: number, side: number) =>
+    [
+      // Add/subtract 1 to account for borders.
+      `${topX} ${topY + 1}`,
+      `${topX - side + 1} ${topY + side}`,
+      `${topX} ${topY + side * 2 - 1}`,
+      `${topX + side - 1} ${topY + side}`,
+    ].join(" ");
 
   const computeLine = (from: HTMLElement, to: HTMLElement): Line => {
     const fromRect = from.getBoundingClientRect();
@@ -44,19 +52,23 @@
     const fromSquarePath = squareToBottomPath(xFrom, yFrom - sqSide, startSqSide);
     const fromSquareMask = squareToBottomPoints(xFrom, yFrom - sqSide, startSqSide);
 
-    const toSquarePath = squareToBottomPath(drawStraightLine ? xFrom : xTo, yTo - sqSide * 3, sqSide);
-    const toSquareMask = squareToBottomPoints(drawStraightLine ? xFrom : xTo, yTo - sqSide * 3, sqSide);
+    const toSquarePath = squareToBottomPath(
+      drawStraightLine ? xFrom : xTo,
+      yTo - sqSide * 3,
+      sqSide,
+    );
+    const toSquareMask = squareToBottomPoints(
+      drawStraightLine ? xFrom : xTo,
+      yTo - sqSide * 3,
+      sqSide,
+    );
 
     let path: string;
 
     if (drawStraightLine) {
       // Use `xFrom` instead of `xTo` since the width of `from` is likely
       // smaller than `to`'s (because `to` has a bigger font).
-      path = [
-        fromSquarePath,
-        `L ${xFrom} ${yTo - sqSide * 3}`,
-        toSquarePath,
-      ].join(" ");
+      path = [fromSquarePath, `L ${xFrom} ${yTo - sqSide * 3}`, toSquarePath].join(" ");
     } else {
       const cornerSqSide = sqSide;
 
@@ -98,7 +110,7 @@
     return [to, path, fromSquareMask, toSquareMask, from];
   };
 
-  export function drawLine({ from, to }: { from: HTMLElement, to: HTMLElement }) {
+  export function drawLine({ from, to }: { from: HTMLElement; to: HTMLElement }) {
     const redrawLine = () => {
       const newLine = computeLine(from, to);
 
@@ -129,12 +141,16 @@
   }
 
   export function triggerRedraw() {
-    lines.update((lines) => lines.map(([target,,,, source]) => computeLine(source, target)));
+    lines.update((lines) => lines.map(([target, , , , source]) => computeLine(source, target)));
   }
 
   showTranslations.subscribe(() => tick().then(() => triggerRedraw()));
 
-  function pathLength(node: SVGPathElement, _: unknown, { direction }: { readonly direction: "in" | "out" | "both" }): TransitionConfig {
+  function pathLength(
+    node: SVGPathElement,
+    _: unknown,
+    { direction }: { readonly direction: "in" | "out" | "both" },
+  ): TransitionConfig {
     const length = node.getTotalLength();
     const multiplier = direction === "in" ? 1 : -1;
 
@@ -151,14 +167,14 @@
 
 <div class="token-lines" role="presentation">
   <svg class="masks">
-    {#each $lines as [, pathData, fromMask, toMask] (pathData)}
+    {#each $lines as [_, pathData, fromMask, toMask] (pathData)}
       <polygon points={fromMask} />
       <polygon points={toMask} />
     {/each}
   </svg>
 
   <svg class="lines">
-    {#each $lines as [, pathData] (pathData)}
+    {#each $lines as [_, pathData] (pathData)}
       <path d={pathData} in:pathLength out:pathLength />
     {/each}
   </svg>
@@ -175,8 +191,12 @@
     }
   }
 
-  .masks { z-index: 2; }
-  .lines { z-index: -1; }
+  .masks {
+    z-index: 2;
+  }
+  .lines {
+    z-index: -1;
+  }
 
   path {
     stroke: var(--accent-1);

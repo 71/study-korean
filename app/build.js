@@ -9,7 +9,7 @@ const dev = process.argv.includes("--dev");
 /** @type {esbuild.BuildOptions} */
 const config = {
   entryPoints: {
-    "app": "src/app.ts",
+    app: "src/app.ts",
     "service-worker": "src/service-worker.ts",
   },
   format: "esm",

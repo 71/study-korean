@@ -11,7 +11,7 @@
     "lib": ["WebWorker", "DOM.Iterable"],
     "target": "ES2022",
     "noImplicitAny": true,
-    "noImplicitOverride": true,
+    "noImplicitOverride": true
   },
-  "include": ["src"],
+  "include": ["src"]
 }

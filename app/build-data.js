@@ -5,8 +5,8 @@ import protobufjs from "protobufjs";
 /** @type {import("./src/data-proto")} */
 const pb = convertToStaticInterface(await protobufjs.load("../data/data.proto"));
 
-const WORDS_MAX_CHUNK_SIZE = 1_000_000;    // 1MB
-const EXAMPLE_MAX_CHUNK_SIZE = 1_000_000;  // 1MB
+const WORDS_MAX_CHUNK_SIZE = 1_000_000; // 1MB
+const EXAMPLE_MAX_CHUNK_SIZE = 1_000_000; // 1MB
 
 // Read all data.
 const dataBuffer = await readFile("../data/kodata.binpb");
@@ -18,9 +18,7 @@ try {
   await mkdir("dist/data");
 } catch {
   // Remove previous files.
-  await Promise.all(
-    (await readdir("dist/data")).map((name) => unlink(`dist/data/${name}`)),
-  );
+  await Promise.all((await readdir("dist/data")).map((name) => unlink(`dist/data/${name}`)));
 }
 
 /** @type {string[]} */
@@ -80,12 +78,15 @@ const indexFiles = await Promise.all(
     translations: new pb.TranslationIndex({
       entries: sortedWords
         .flatMap((word) => definitionsOf(word))
-        .map((def) => new pb.TranslationIndex.Entry({
-          translations: dedup(
-            def.meanings.map((meaning) => meaning.translation).filter((tr) => tr.length > 0),
-          ),
-          wordId: def.wordId,
-        }))
+        .map(
+          (def) =>
+            new pb.TranslationIndex.Entry({
+              translations: dedup(
+                def.meanings.map((meaning) => meaning.translation).filter((tr) => tr.length > 0),
+              ),
+              wordId: def.wordId,
+            }),
+        )
         .filter((entry) => entry.translations.length > 0),
     }),
   }).map(async ([name, index]) => {
@@ -136,12 +137,16 @@ const uiWords = {
 };
 const wordByText = Object.fromEntries(data.words.map((word) => [word.text, word]));
 
-await writeFile(`src/generated.ts`, `
+await writeFile(
+  `src/generated.ts`,
+  `
 /**
  * Mapping from a word shown in the UI to its ID.
  */
 export const uiWordIds = Object.freeze({
-  ${Object.entries(uiWords).map(([k, v]) => `"${k}": ${wordByText[k][v].wordId},`).join("\n  ")}
+  ${Object.entries(uiWords)
+    .map(([k, v]) => `"${k}": ${wordByText[k][v].wordId},`)
+    .join("\n  ")}
 });
 
 /**
@@ -157,7 +162,8 @@ export const indexFiles = Object.freeze({
 export const protobufFileNames = Object.freeze([
   ${outputNames.map((name) => `"${name}",`).join("\n  ")}
 ]);
-`);
+`,
+);
 
 /**
  * @param {{ nested: Record<string, import("protobufjs").Message> }} namespace
@@ -166,8 +172,7 @@ function convertToStaticInterface(namespace) {
   const { nested = {} } = namespace;
 
   return Object.fromEntries(
-    Object.entries(nested)
-      .map(([k, v]) => [k, Object.assign(v.ctor, convertToStaticInterface(v))]),
+    Object.entries(nested).map(([k, v]) => [k, Object.assign(v.ctor, convertToStaticInterface(v))]),
   );
 }
 
@@ -206,7 +211,7 @@ function hashOf(buffer) {
  * @returns {Promise<C[]>}
  */
 async function createChunks(args) {
-  const CHUNK_BASE_SIZE = 8;  // Give some room for size.
+  const CHUNK_BASE_SIZE = 8; // Give some room for size.
   const { Chunk, maxChunkSize, inputs, toEntry, addToChunk, createChunkEntry } = args;
 
   /** @type {C[]} */

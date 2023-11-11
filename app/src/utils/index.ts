@@ -51,7 +51,10 @@ export function throttle<Args extends any[]>(
 
 export function awaitOr<T>(promise: T, fallback: Awaited<T>) {
   return readable(fallback, (set) => {
-    Promise.resolve(promise).then((x) => set(x), (e) => console.error(e));
+    Promise.resolve(promise).then(
+      (x) => set(x),
+      (e) => console.error(e),
+    );
   });
 }
 

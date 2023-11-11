@@ -60,17 +60,20 @@
   let element: HTMLElement;
   let thisSelection: AmbiguousTokenSelection;
 
-  $: selectable = wordIds.length > 0 || /^[\p{Script=Han}\p{Script=Hangul}]+$|^[a-zA-Z]+$/u.test(text);
+  $: selectable =
+    wordIds.length > 0 || /^[\p{Script=Han}\p{Script=Hangul}]+$|^[a-zA-Z]+$/u.test(text);
   $: thisSelection = { source: element, tokens: wordIds.length === 0 ? [text] : wordIds };
   $: selected = selection === thisSelection;
-  $: selectionHandler = selectable ? () => {
-    if (selection !== thisSelection) {
-      selection = thisSelection;
-    } else {
-      dispatch("activeTokenClick", thisSelection);
-      selection = undefined;
-    }
-  } : undefined;
+  $: selectionHandler = selectable
+    ? () => {
+        if (selection !== thisSelection) {
+          selection = thisSelection;
+        } else {
+          dispatch("activeTokenClick", thisSelection);
+          selection = undefined;
+        }
+      }
+    : undefined;
 
   onDestroy(() => {
     if (selected) {
@@ -81,11 +84,12 @@
 
 <span
   bind:this={element}
-  class=token class:selected
+  class="token"
+  class:selected
   on:click={selectionHandler}
   on:keypress={selectionHandler !== undefined ? withKey("Space", selectionHandler) : undefined}
-  role=button
-  tabindex=0
+  role="button"
+  tabindex="0"
 >
   {text}
 </span>

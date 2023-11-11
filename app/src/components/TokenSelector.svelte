@@ -1,20 +1,22 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { AmbiguousTokenSelection, TokenSelection } from "./Token.svelte";
-	import { db } from "../store";
-	import Line from "./Line.svelte";
-	import { triggerRedraw } from "./TokenLines.svelte";
+  import { onMount } from "svelte";
+  import { AmbiguousTokenSelection, TokenSelection } from "./Token.svelte";
+  import { db } from "../store";
+  import Line from "./Line.svelte";
+  import { triggerRedraw } from "./TokenLines.svelte";
 
   export let inputSelection: AmbiguousTokenSelection;
   export let selectedSelection: TokenSelection;
 
-  let selectedTokenIndex = (void inputSelection, 0);  // Reset when `inputSelection` changes.
+  let selectedTokenIndex = (void inputSelection, 0); // Reset when `inputSelection` changes.
   let selectorElement: HTMLElement;
   let selectedElement: HTMLElement;
 
   function updateSelectedToken(selectedTokenIndex: number) {
     if (selectorElement !== undefined) {
-      selectedElement = selectorElement.firstElementChild!.childNodes[selectedTokenIndex]! as HTMLElement;
+      selectedElement = selectorElement.firstElementChild!.childNodes[
+        selectedTokenIndex
+      ]! as HTMLElement;
     }
 
     const selectedToken = inputSelection.tokens[selectedTokenIndex];
@@ -34,11 +36,12 @@
   <span class="tokens">
     {#each inputSelection.tokens as token, i}
       <span
-        class="token" class:selected={selectedTokenIndex === i}
-        on:click={() => selectedTokenIndex = i}
-        on:keypress={() => selectedTokenIndex = i}
+        class="token"
+        class:selected={selectedTokenIndex === i}
+        on:click={() => (selectedTokenIndex = i)}
+        on:keypress={() => (selectedTokenIndex = i)}
         role="button"
-        tabindex=0
+        tabindex="0"
       >
         {typeof token === "string" ? token : $db.wordTextById(token)}
       </span>
@@ -58,10 +61,10 @@
     overflow-x: auto;
 
     /* Hide scrollbars: https://stackoverflow.com/a/38994837 */
-    scrollbar-width: none;  /* Firefox */
+    scrollbar-width: none; /* Firefox */
 
     &::-webkit-scrollbar {
-      display: none;  /* Safari and Chromium */
+      display: none; /* Safari and Chromium */
     }
   }
 
@@ -71,9 +74,9 @@
 
     & > .token {
       margin-left: 1em;
-      opacity: .7;
+      opacity: 0.7;
       display: inline-block;
-      padding: .05em 0 .15em 0;
+      padding: 0.05em 0 0.15em 0;
 
       &:first-child {
         margin-left: 0;

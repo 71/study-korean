@@ -1,7 +1,5 @@
 import { protobufFileNames } from "./generated";
 
-export {};
-
 declare const self: ServiceWorkerGlobalScope;
 
 const CURRENT_CACHES = {
@@ -77,6 +75,8 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(fetchFromCache("assets", event.request));
   } else {
     // Handle requests to `/`, `/s/안녕/`, `/s/안녕/1`, etc.
-    event.respondWith(fetchFromCache("assets", new Request(new URL("/index.html", event.request.url))));
+    event.respondWith(
+      fetchFromCache("assets", new Request(new URL("/index.html", event.request.url))),
+    );
   }
 });

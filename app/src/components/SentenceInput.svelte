@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { onMount, tick } from "svelte";
+  import { onMount, tick } from "svelte";
 
-	import Token, { AmbiguousTokenSelection } from "./Token.svelte";
-	import type { Db } from "../db";
-	import { throttle } from "../utils";
-	import { resizeTokens } from "../utils/tokens";
-	import { flattenSelectionRanges, resolveSelectionRanges, withKey } from "../utils/ui";
+  import Token, { AmbiguousTokenSelection } from "./Token.svelte";
+  import type { Db } from "../db";
+  import { throttle } from "../utils";
+  import { resizeTokens } from "../utils/tokens";
+  import { flattenSelectionRanges, resolveSelectionRanges, withKey } from "../utils/ui";
 
   export let okt: typeof import("oktjs") | undefined;
   export let db: Db | undefined;
@@ -35,22 +35,22 @@
   let inputElement: HTMLElement;
   let tokensElement: HTMLElement;
 
-  $: sentenceInputTokens = (
-    okt === undefined || db === undefined ? [] : ((sentenceOrPlaceholder: string) => {
-      switch (type) {
-      case Type.Hangul:
-        return resizeTokens(
-          okt.tokenize(okt.normalize(sentenceOrPlaceholder))
-            .map((token) => ({
-              text: token.text,
-              wordIds: db!.wordIdsByText(token.stem ?? token.text),
-            })),
-        );
-      case Type.Foreign:
-        return [{ text: sentenceOrPlaceholder, wordIds: [] }];
-      }
-    })(sentenceOrPlaceholder)
-  );
+  $: sentenceInputTokens =
+    okt === undefined || db === undefined
+      ? []
+      : ((sentenceOrPlaceholder: string) => {
+          switch (type) {
+            case Type.Hangul:
+              return resizeTokens(
+                okt.tokenize(okt.normalize(sentenceOrPlaceholder)).map((token) => ({
+                  text: token.text,
+                  wordIds: db!.wordIdsByText(token.stem ?? token.text),
+                })),
+              );
+            case Type.Foreign:
+              return [{ text: sentenceOrPlaceholder, wordIds: [] }];
+          }
+        })(sentenceOrPlaceholder);
 
   function handleSentenceInput(e: Event) {
     sentence = inputElement.textContent?.replace(/\n/g, " ") ?? "";
@@ -78,8 +78,9 @@
 
       await tick();
 
-      const tokenElement = [...tokensElement.querySelectorAll("span.token")]
-        .find((span) => span.textContent === placeholderFocusedWord);
+      const tokenElement = [...tokensElement.querySelectorAll("span.token")].find(
+        (span) => span.textContent === placeholderFocusedWord,
+      );
 
       (tokenElement as HTMLElement | undefined)?.click();
     }
@@ -170,7 +171,7 @@
       on:focusin={handleSentenceFocus}
       on:focusout={handleSentenceBlur}
       role="textbox"
-      tabindex=0
+      tabindex="0"
     />
 
     <div class="tokens" bind:this={tokensElement}>
@@ -181,9 +182,15 @@
   </div>
 
   <div class="clear-wrapper">
-    <span class="clear" class:hidden={sentenceInputTokens.length === 0} role="button" tabindex="0"
-          title="Clear input sentence"
-          on:keypress={withKey("Space", clearSentence)} on:click={clearSentence}>×</span>
+    <span
+      class="clear"
+      class:hidden={sentenceInputTokens.length === 0}
+      role="button"
+      tabindex="0"
+      title="Clear input sentence"
+      on:keypress={withKey("Space", clearSentence)}
+      on:click={clearSentence}>×</span
+    >
   </div>
 </div>
 
@@ -205,7 +212,8 @@
     }
   }
 
-  .editor, .tokens {
+  .editor,
+  .tokens {
     width: 100%;
   }
 

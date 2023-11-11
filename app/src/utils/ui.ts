@@ -16,9 +16,9 @@ export function withKey(key: string, callback: (e: KeyboardEvent) => void) {
  */
 export function flattenSelectionRanges(
   element: Element,
-): readonly { start: number; end: number; }[] {
+): readonly { start: number; end: number }[] {
   const docSelection = document.getSelection();
-  const selections: { start: number; end: number; }[] = [];
+  const selections: { start: number; end: number }[] = [];
 
   if (docSelection === null) {
     return selections;
@@ -70,7 +70,7 @@ export function flattenSelectionRanges(
  */
 export function resolveSelectionRanges(
   element: Element,
-  selections: readonly { start: number; end: number; }[],
+  selections: readonly { start: number; end: number }[],
 ): readonly Range[] | undefined {
   const docSelection = document.getSelection();
 
@@ -86,7 +86,8 @@ export function resolveSelectionRanges(
     let node = element.firstChild;
 
     while (node !== null) {
-      const nodeText = node.nodeType === Node.TEXT_NODE ? node as Text : node.firstChild as Text;
+      const nodeText =
+        node.nodeType === Node.TEXT_NODE ? (node as Text) : (node.firstChild as Text);
       const nodeTextLength = nodeText.data.length;
 
       if (index <= start && start <= index + nodeTextLength) {
@@ -114,7 +115,7 @@ export function resolveSelectionRanges(
  */
 export function restoreSelectionRanges(
   element: Element,
-  selections: readonly { start: number; end: number; }[],
+  selections: readonly { start: number; end: number }[],
 ): void {
   const selection = document.getSelection();
 

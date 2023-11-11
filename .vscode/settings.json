@@ -1,0 +1,6 @@
+{
+  "[javascript][typescript][svelte][css][json][jsonc]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode",
+    "editor.formatOnSave": true
+  }
+}

@@ -12,8 +12,8 @@
 </script>
 
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { readable } from "svelte/store";
+  import { onMount } from "svelte";
+  import { readable } from "svelte/store";
 
   const path: [number, number][] = [
     [-30, 0],
@@ -25,7 +25,7 @@
     [70, 0],
   ];
 
-  $: scale = $pageWidth < 500 ? .6 : 1;
+  $: scale = $pageWidth < 500 ? 0.6 : 1;
   $: pathToPoints = (xm: number, ym: number) =>
     path.map(([x, y]) => [x * xm * scale, y * ym * scale].join(",")).join(" ");
 
@@ -62,7 +62,7 @@
       {/each}
 
       {#each [1, -1] as xm}
-        <line x1={xm * offsetX} x2={xm * (offsetX + lineWidth)} y1=0 y2=0 class:border />
+        <line x1={xm * offsetX} x2={xm * (offsetX + lineWidth)} y1="0" y2="0" class:border />
       {/each}
     {/each}
   </svg>
@@ -84,7 +84,8 @@
     }
   }
 
-  polyline, line {
+  polyline,
+  line {
     stroke: var(--accent-1);
     stroke-width: 1px;
 
@@ -103,6 +104,8 @@
   }
 
   @keyframes remove-dashoffset {
-    to { stroke-dashoffset: 0; }
+    to {
+      stroke-dashoffset: 0;
+    }
   }
 </style>

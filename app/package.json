@@ -31,5 +31,6 @@
     "tslib": "^2.4.1",
     "typescript": "^5.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "packageManager": "yarn@1.22.22"
 }

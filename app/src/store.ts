@@ -40,14 +40,14 @@ export const enum RouteKind {
 /**
  * The route of the app.
  */
-export type Route = (
-  | { readonly kind: RouteKind.Index; }
-  | { readonly kind: RouteKind.Unknown;
-      readonly path: string; }
-  | { readonly kind: RouteKind.SentenceExplorer;
+export type Route =
+  | { readonly kind: RouteKind.Index }
+  | { readonly kind: RouteKind.Unknown; readonly path: string }
+  | {
+      readonly kind: RouteKind.SentenceExplorer;
       readonly sentence: string;
-      readonly words: readonly string[]; }
-);
+      readonly words: readonly string[];
+    };
 
 function parseRoute(path: string = location.pathname): Route {
   if (path === "/") {
@@ -82,12 +82,12 @@ function unescapeString(string: string): string {
 
 function stringifyRoute(route: Route): string {
   switch (route.kind) {
-  case RouteKind.Index:
-    return "/";
-  case RouteKind.SentenceExplorer:
-    return `/s/${escapeString(route.sentence)}/${route.words.map(escapeString).join("/")}`;
-  case RouteKind.Unknown:
-    return route.path;
+    case RouteKind.Index:
+      return "/";
+    case RouteKind.SentenceExplorer:
+      return `/s/${escapeString(route.sentence)}/${route.words.map(escapeString).join("/")}`;
+    case RouteKind.Unknown:
+      return route.path;
   }
 }
 

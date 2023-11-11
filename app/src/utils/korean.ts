@@ -1,16 +1,19 @@
 // http://www.programminginkorean.com/programming/hangul-in-unicode/composing-syllables-in-unicode/
 // http://www.unicode.org/charts/PDF/U1100.pdf
 const initial = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
-const medial  = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
-const final   = "ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
+const medial = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
+const final = "ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
 const allJamo = initial + medial + final;
-const base    = 0xAC00;
+const base = 0xac00;
 
 const [replacePairsRegex, replacePairsMap] = (() => {
-  const replacePairs = ( "ㅂㅂ ㅃ, ㅈㅈ ㅉ, ㄷㄷ ㄸ, ㄱㄱ ㄲ, ㅅㅅ ㅆ, ㄱㅅ ㄳ, ㄴㅈ ㄵ, ㄴㅎ ㄶ, "
-                       + "ㄹㄱ ㄺ, ㄹㅁ ㄻ, ㄹㅂ ㄼ, ㄹㅅ ㄽ, ㄹㅌ ㄾ, ㄹㅍ ㄿ, ㄹㅎ ㅀ, ㅂㅅ ㅄ, "
-                       + "ㅗㅏ ㅘ, ㅗㅐ ㅙ, ㅗㅣ ㅚ, ㅡㅣ ㅢ, ㅜㅣ ㅟ, ㅜㅓ ㅝ, ㅜㅔ ㅞ"
-                       ).split(", ").map(x => x.split(" "));
+  const replacePairs = (
+    "ㅂㅂ ㅃ, ㅈㅈ ㅉ, ㄷㄷ ㄸ, ㄱㄱ ㄲ, ㅅㅅ ㅆ, ㄱㅅ ㄳ, ㄴㅈ ㄵ, ㄴㅎ ㄶ, " +
+    "ㄹㄱ ㄺ, ㄹㅁ ㄻ, ㄹㅂ ㄼ, ㄹㅅ ㄽ, ㄹㅌ ㄾ, ㄹㅍ ㄿ, ㄹㅎ ㅀ, ㅂㅅ ㅄ, " +
+    "ㅗㅏ ㅘ, ㅗㅐ ㅙ, ㅗㅣ ㅚ, ㅡㅣ ㅢ, ㅜㅣ ㅟ, ㅜㅓ ㅝ, ㅜㅔ ㅞ"
+  )
+    .split(", ")
+    .map((x) => x.split(" "));
 
   return [
     new RegExp(replacePairs.map((x) => x[0]).join("|"), "g"),
@@ -19,7 +22,7 @@ const [replacePairsRegex, replacePairsMap] = (() => {
 })();
 
 function isSyllable(charCode: number): boolean {
-  return charCode >= 0xAC00 && charCode <= 0xD7A3;
+  return charCode >= 0xac00 && charCode <= 0xd7a3;
 }
 
 function isJamo(charCode: number): boolean {
@@ -41,16 +44,17 @@ export function syllablesToJamo(syllables: string): string {
       throw new Error("invalid syllable");
     }
 
-    const syllable     = x - base;
-    const initialIndex = (syllable / 28) / 21 | 0;
-    const medialIndex  = (syllable / 28) % 21 | 0;
-    const finalIndex   = syllable % 28;
-    const initialChar  = initial[initialIndex];
-    const medialChar   = medial[medialIndex];
+    const syllable = x - base;
+    const initialIndex = (syllable / 28 / 21) | 0;
+    const medialIndex = (syllable / 28) % 21 | 0;
+    const finalIndex = syllable % 28;
+    const initialChar = initial[initialIndex];
+    const medialChar = medial[medialIndex];
 
-    result += finalIndex === 0
-      ? initialChar + medialChar
-      : initialChar + medialChar + final[finalIndex - 1];
+    result +=
+      finalIndex === 0
+        ? initialChar + medialChar
+        : initialChar + medialChar + final[finalIndex - 1];
   }
 
   return result;
@@ -77,7 +81,7 @@ export function jamoToSyllable(jamo: string): string {
     return String.fromCharCode(base + initialIndex * 588 + medialIndex * 28);
   }
 
-  const finalIndex = final.indexOf(jamo[2])
+  const finalIndex = final.indexOf(jamo[2]);
 
   if (finalIndex === -1) {
     throw new Error("invalid final jamo");

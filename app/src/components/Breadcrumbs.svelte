@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   export let crumbs: readonly string[];
 
@@ -11,10 +11,13 @@
     {#if i > 0}
       <span>/</span>
     {/if}
-    <span class="crumb" role="button"
-          tabindex="0"
-          on:click={() => dispatch("crumbclick", i)}
-          on:keypress={() => dispatch("crumbclick", i)}>{crumb}</span>
+    <span
+      class="crumb"
+      role="button"
+      tabindex="0"
+      on:click={() => dispatch("crumbclick", i)}
+      on:keypress={() => dispatch("crumbclick", i)}>{crumb}</span
+    >
   {/each}
 </div>
 

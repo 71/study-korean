@@ -5,7 +5,7 @@
   export let from: HTMLElement | undefined;
   export let to: HTMLElement | undefined;
 
-  let subscription: { (): void; } | undefined;
+  let subscription: { (): void } | undefined;
 
   $: if (from !== undefined && from.getRootNode() !== from && to !== undefined) {
     subscription?.();

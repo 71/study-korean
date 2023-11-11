@@ -8,7 +8,9 @@ export type DefinedWord = import("./data-proto.d.ts").Word.Defined;
 export type Meaning = import("./data-proto.d.ts").Word.Meaning;
 export type TokenizedText = import("./data-proto.d.ts").TokenizedText;
 export type POS = keyof {
-  [P in keyof Word as Word[P] extends import("./data-proto.d.ts").Word.IDefined | undefined | null ? P : never]: 0;
+  [P in keyof Word as Word[P] extends import("./data-proto.d.ts").Word.IDefined | undefined | null
+    ? P
+    : never]: 0;
 };
 
 interface SeenCounter {
@@ -51,7 +53,10 @@ export class Db {
   /**
    * Map from a single Han character to the list of words that contain that character.
    */
-  private readonly hanMap: ReadonlyMap<string, readonly [words: readonly HanWord[], readings: readonly string[]]>;
+  private readonly hanMap: ReadonlyMap<
+    string,
+    readonly [words: readonly HanWord[], readings: readonly string[]]
+  >;
 
   // Fields below are lazily populated.
 
@@ -80,81 +85,89 @@ export class Db {
     (window as Record<string, any>)["DB"] = this;
 
     // Populate POS map.
-    const posIdToPos = this.posIdToPos = new Map<string, import("./data-proto.d.ts").PartOfSpeech>();
+    const posIdToPos = (this.posIdToPos = new Map<
+      string,
+      import("./data-proto.d.ts").PartOfSpeech
+    >());
 
     for (const pos of index.pos) {
       posIdToPos.set(pos.id!, pos as import("./data-proto.d.ts").PartOfSpeech);
     }
 
     // Populate word indices.
-    const wordToChunk = this.wordToChunk = new Map<string | number, string>();
-    const jamoPrefixes = this.jamoPrefixes = new Map<string, string[]>();
-    const hanMap = this.hanMap = new Map<string, [words: HanWord[], readings: string[]]>();
+    const wordToChunk = (this.wordToChunk = new Map<string | number, string>());
+    const jamoPrefixes = (this.jamoPrefixes = new Map<string, string[]>());
+    const hanMap = (this.hanMap = new Map<string, [words: HanWord[], readings: string[]]>());
 
-    for (const { chunk, entries } of index.words)
-    for (const word of entries!) {
-      const wordText = word.text!;
+    for (const { chunk, entries } of index.words) {
+      for (const word of entries!) {
+        const wordText = word.text!;
 
-      // Add to index.
-      for (const wordId of word.wordIds!) {
-        wordToChunk.set(wordId, chunk!);
-        this.idToWord.set(wordId, wordText);
-      }
-      wordToChunk.set(wordText, chunk!);
-      this.dictionary.set(wordText, [...word.wordIds!]);
-
-      // Add to prefixes list.
-      let jamo: string | undefined = undefined;
-
-      try {
-        jamo = syllablesToJamo(wordText);
-      } catch {
-        // Not fully jamo, don't add to index.
-      }
-
-      if (jamo !== undefined) {
-        const key = jamo.slice(0, 2);
-        const lookupString = `${jamo.slice(2)}/${wordText}`;
-        const list = jamoPrefixes.get(key);
-
-        if (list === undefined) {
-          jamoPrefixes.set(key, [lookupString]);
-        } else if (!list.includes(lookupString)) {
-          list.push(lookupString);
+        // Add to index.
+        for (const wordId of word.wordIds!) {
+          wordToChunk.set(wordId, chunk!);
+          this.idToWord.set(wordId, wordText);
         }
-      }
+        wordToChunk.set(wordText, chunk!);
+        this.dictionary.set(wordText, [...word.wordIds!]);
 
-      // Add to Han map.
-      for (let i = 0; i < word.wordIds!.length; i++) {
-        const wordId = word.wordIds![i];
-        const origin = word.origins![i];
+        // Add to prefixes list.
+        let jamo: string | undefined = undefined;
 
-        if (origin.length === 0) {
-          continue;
+        try {
+          jamo = syllablesToJamo(wordText);
+        } catch {
+          // Not fully jamo, don't add to index.
         }
 
-        let characterIndex = 0;
-        const hanWord: HanWord = { han: origin, hangul: word.text!, id: wordId };
+        if (jamo !== undefined) {
+          const key = jamo.slice(0, 2);
+          const lookupString = `${jamo.slice(2)}/${wordText}`;
+          const list = jamoPrefixes.get(key);
 
-        for (const han of origin) {
-          let wordsAndReadings = hanMap.get(han);
+          if (list === undefined) {
+            jamoPrefixes.set(key, [lookupString]);
+          } else if (!list.includes(lookupString)) {
+            list.push(lookupString);
+          }
+        }
 
-          if (wordsAndReadings === undefined) {
-            hanMap.set(han, wordsAndReadings = [[hanWord], []]);
-          } else {
-            wordsAndReadings[0].push(hanWord);
+        // Add to Han map.
+        for (let i = 0; i < word.wordIds!.length; i++) {
+          const wordId = word.wordIds![i];
+          const origin = word.origins![i];
+
+          if (origin.length === 0) {
+            continue;
           }
 
-          // Add Hangul reading, if any.
-          if (origin.length === wordText.length) {
-            const hangulReading = wordText[characterIndex];
+          let characterIndex = 0;
+          const hanWord: HanWord = {
+            han: origin,
+            hangul: word.text!,
+            id: wordId,
+          };
 
-            if (!wordsAndReadings[1].includes(hangulReading)) {
-              wordsAndReadings[1].push(hangulReading);
+          for (const han of origin) {
+            let wordsAndReadings = hanMap.get(han);
+
+            if (wordsAndReadings === undefined) {
+              hanMap.set(han, (wordsAndReadings = [[hanWord], []]));
+            } else {
+              wordsAndReadings[0].push(hanWord);
             }
-          }
 
-          characterIndex++;
+            // Add Hangul reading, if any.
+            if (origin.length === wordText.length) {
+              const hangulReading = wordText[characterIndex];
+
+              if (!wordsAndReadings[1].includes(hangulReading)) {
+                wordsAndReadings[1].push(hangulReading);
+              }
+            }
+
+            characterIndex++;
+          }
         }
       }
     }
@@ -168,7 +181,7 @@ export class Db {
         const resp = await fetch(`/data/${id}.binpb`);
         const data = await resp.arrayBuffer();
 
-        this.loadedChunks.set(id, null);  // Mark that promise completed.
+        this.loadedChunks.set(id, null); // Mark that promise completed.
 
         parseChunk(new Uint8Array(data));
       })();
@@ -287,7 +300,11 @@ export class Db {
   public wordIdsByText(text: string): readonly number[] {
     const word = this.dictionary.get(text);
 
-    return word === undefined ? [] : Array.isArray(word) ? word : definitionsOf(word as Word).map((def) => def.wordId);
+    return word === undefined
+      ? []
+      : Array.isArray(word)
+      ? word
+      : definitionsOf(word as Word).map((def) => def.wordId);
   }
 
   /**
@@ -318,7 +335,10 @@ export class Db {
   /**
    * Returns a list of words that start with the given string of Hangul syllables.
    */
-  public wordsStartingWith(string: string, { limit = 0 }: { limit?: number } = {}): readonly string[] {
+  public wordsStartingWith(
+    string: string,
+    { limit = 0 }: { limit?: number } = {},
+  ): readonly string[] {
     let jamo: string;
 
     try {
@@ -356,20 +376,22 @@ export class Db {
       }
     }
 
-    return results.sort(([a, aSyllablesInCommon, ai], [b, bSyllablesInCommon, bi]) => {
-      // Prefer strings that start with full matching syllables.
-      if (aSyllablesInCommon !== bSyllablesInCommon) {
-        return bSyllablesInCommon - aSyllablesInCommon;
-      }
+    return results
+      .sort(([a, aSyllablesInCommon, ai], [b, bSyllablesInCommon, bi]) => {
+        // Prefer strings that start with full matching syllables.
+        if (aSyllablesInCommon !== bSyllablesInCommon) {
+          return bSyllablesInCommon - aSyllablesInCommon;
+        }
 
-      // Prefer shorter strings.
-      if (a.length !== b.length) {
-        return a.length - b.length;
-      }
+        // Prefer shorter strings.
+        if (a.length !== b.length) {
+          return a.length - b.length;
+        }
 
-      // `sort()` is not stable, so fall back to indices.
-      return ai - bi;
-    }).map(([text]) => text);
+        // `sort()` is not stable, so fall back to indices.
+        return ai - bi;
+      })
+      .map(([text]) => text);
   }
 
   /**
@@ -400,7 +422,9 @@ export class Db {
   /**
    * Returns a list of words that contain the given Han character.
    */
-  public wordsWithHan(han: string): readonly [words: readonly HanWord[], readings: readonly string[]] {
+  public wordsWithHan(
+    han: string,
+  ): readonly [words: readonly HanWord[], readings: readonly string[]] {
     return this.hanMap.get(han) ?? [[], []];
   }
 
@@ -423,7 +447,7 @@ export class Db {
   }
 }
 
-async function fetchProtobuf<M>(name: string, ctor: { decode(data: Uint8Array): M; }): Promise<M> {
+async function fetchProtobuf<M>(name: string, ctor: { decode(data: Uint8Array): M }): Promise<M> {
   const resp = await fetch(`/data/${name}.binpb`);
   const data = await resp.arrayBuffer();
 

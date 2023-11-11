@@ -1,9 +1,9 @@
 const emptyArray = Object.freeze([]);
 
-export type SimpleToken = { readonly text: string; } & (
-  | { }
-  | { readonly wordId: number; }
-  | { readonly wordIds: readonly number[]; }
+export type SimpleToken = { readonly text: string } & (
+  | {}
+  | { readonly wordId: number }
+  | { readonly wordIds: readonly number[] }
 );
 
 /**
@@ -14,13 +14,14 @@ export type SimpleToken = { readonly text: string; } & (
  * - Zero-sized tokens are merged with their preceeding token.
  */
 export function resizeTokens(tokens: readonly SimpleToken[]) {
-  const result: { text: string; wordIds: readonly number[]; }[] = [];
+  const result: { text: string; wordIds: readonly number[] }[] = [];
 
   for (const token of tokens) {
     const text = token.text;
-    const wordIds = "wordId" in token && token.wordId != null
-      ? [token.wordId]
-      : "wordIds" in token && token.wordIds != null
+    const wordIds =
+      "wordId" in token && token.wordId != null
+        ? [token.wordId]
+        : "wordIds" in token && token.wordIds != null
         ? token.wordIds
         : [];
 

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Meaning } from "../db";
-	import { uiWordIds } from "../generated";
-	import { showTranslations } from "../store";
-	import { nn } from "../utils";
-	import { resizeTokens } from "../utils/tokens";
-	import Token, { AmbiguousTokenSelection } from "./Token.svelte";
+  import { Meaning } from "../db";
+  import { uiWordIds } from "../generated";
+  import { showTranslations } from "../store";
+  import { nn } from "../utils";
+  import { resizeTokens } from "../utils/tokens";
+  import Token, { AmbiguousTokenSelection } from "./Token.svelte";
 
   export let meaning: Meaning;
   export let selection: AmbiguousTokenSelection | undefined;
@@ -12,9 +12,17 @@
   const emptyList: readonly never[] = [];
   let expanded = false;
 
-  $: resizedTokens = meaning.definition?.tokens == null
-    ? null
-    : resizeTokens(resizeTokens(meaning.definition.tokens.map((token) => ({ text: token.text ?? "", wordId: token.wordId }))));
+  $: resizedTokens =
+    meaning.definition?.tokens == null
+      ? null
+      : resizeTokens(
+          resizeTokens(
+            meaning.definition.tokens.map((token) => ({
+              text: token.text ?? "",
+              wordId: token.wordId,
+            })),
+          ),
+        );
 
   $: relatedWords = [
     ...(meaning.synonyms?.map((ref) => [ref, "유의어"] as const) ?? emptyList),
@@ -26,10 +34,10 @@
 
 <div
   class="meaning"
-  on:click={() => expanded = !expanded}
-  on:keypress={() => expanded = !expanded}
-  role=button
-  tabindex=0
+  on:click={() => (expanded = !expanded)}
+  on:keypress={() => (expanded = !expanded)}
+  role="button"
+  tabindex="0"
 >
   <table>
     {#if $showTranslations}
@@ -97,11 +105,12 @@
     font-size: 1.3em;
   }
 
-  tr.translation, tr.definition-translation {
+  tr.translation,
+  tr.definition-translation {
     color: var(--fg-secondary);
 
     & td:last-child {
-      font-size: .8em;
+      font-size: 0.8em;
     }
   }
 
@@ -111,7 +120,7 @@
 
   td.header {
     padding: 0 1em 1em 0;
-    font-size: .7em;
+    font-size: 0.7em;
     text-wrap: nowrap;
   }
 
@@ -120,7 +129,7 @@
   }
 
   .related-words {
-    margin-top: .5em;
+    margin-top: 0.5em;
   }
 
   .related-words .pair {
@@ -135,7 +144,7 @@
     }
 
     & > span:first-child {
-      margin-right: .6em;
+      margin-right: 0.6em;
       font-weight: 500;
     }
   }
