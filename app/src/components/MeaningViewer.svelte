@@ -73,7 +73,7 @@
           <Token text="번역" wordIds={[uiWordIds.번역]} bind:selection />
         </td>
         <td>
-          {meaning.definitionTranslation}
+          <span>{meaning.definitionTranslation}</span>
         </td>
       </tr>
     {/if}
