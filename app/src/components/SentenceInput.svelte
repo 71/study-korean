@@ -62,6 +62,8 @@
           tick().then(() => {
             document.getSelection()!.setPosition(inputElement, 0);
           });
+        } else {
+          handleSelectionChange();
         }
       });
     }
@@ -93,6 +95,38 @@
     inputElement.focus();
   }
 
+  const handleSelectionChange = throttle(400, function rawSelectionChangeEventListener() {
+    const selection = document.getSelection()!;
+
+    if (displayPlaceholder) {
+      return;
+    }
+
+    if (!inputElement.contains(selection.focusNode)) {
+      return;
+    }
+
+    const selectionRanges = flattenSelectionRanges(inputElement);
+
+    if (selectionRanges.length === 0) {
+      return;
+    }
+
+    const ranges = resolveSelectionRanges(tokensElement, selectionRanges);
+
+    if (ranges === undefined || ranges.length === 0) {
+      return;
+    }
+
+    const tokenElement = ranges[0].startContainer!.parentElement;
+
+    if (!tokenElement?.classList.contains("selected")) {
+      tokenElement?.click();
+    }
+
+    selectionAtEnd = selection.focusNode?.textContent?.length === selection.focusOffset;
+  });
+
   $: if (db === undefined || !selectionAtEnd || displayPlaceholder) {
     suggestions = [];
   } else {
@@ -106,41 +140,9 @@
   }
 
   onMount(() => {
-    const rawSelectionChangeEventListener = async () => {
-      const selection = document.getSelection()!;
+    document.addEventListener("selectionchange", handleSelectionChange);
 
-      if (displayPlaceholder) {
-        return;
-      }
-
-      if (!inputElement.contains(selection.focusNode)) {
-        return;
-      }
-
-      const selectionRanges = flattenSelectionRanges(inputElement);
-
-      if (selectionRanges.length === 0) {
-        return;
-      }
-
-      const ranges = resolveSelectionRanges(tokensElement, selectionRanges);
-
-      if (ranges === undefined || ranges.length === 0) {
-        return;
-      }
-
-      const tokenElement = ranges[0].startContainer!.parentElement;
-
-      tokenElement?.click();
-
-      selectionAtEnd = selection.focusNode?.textContent?.length === selection.focusOffset;
-    };
-
-    const selectionChangeEventListener = throttle(400, rawSelectionChangeEventListener);
-
-    document.addEventListener("selectionchange", selectionChangeEventListener);
-
-    return () => document.removeEventListener("selectionchange", selectionChangeEventListener);
+    return () => document.removeEventListener("selectionchange", handleSelectionChange);
   });
 
   $: if (inputElement !== undefined) {
