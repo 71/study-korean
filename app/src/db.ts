@@ -219,7 +219,7 @@ export class Db {
   /**
    * Returns the map from the first three English letters of a word to the list of words that start with those.
    *
-   * Keys are `enWord.slice(0, 3)`, values are `${enWord.slice(3)}/${koWord}/${koWordId}`.
+   * Keys are `enWord.slice(0, 3).toLowerCase()`, values are `${enWord}/${koWord}/${koWordId}`.
    */
   private async englishPrefixes(): Promise<Map<string, readonly string[]>> {
     if (this.lazyEnglishPrefixes === undefined) {
@@ -233,7 +233,7 @@ export class Db {
 
           for (const translation of translations) {
             const key = translation.slice(0, 3);
-            const value = `${translation.slice(3)}/${this.wordTextById(wordId)}/${wordId}`;
+            const value = `${translation}/${this.wordTextById(wordId)}/${wordId}`;
             const existing = map.get(key);
 
             if (existing === undefined) {
@@ -402,21 +402,29 @@ export class Db {
     { limit = 0 }: { limit?: number } = {},
   ): Promise<readonly [en: string, ko: string, id: number][]> {
     const index = await this.englishPrefixes();
-    const key = text.slice(0, 3);
-    const lookupString = text.slice(3);
+    const key = text.slice(0, 3).toLowerCase();
+    const lookupString = text;
     const values = index.get(key);
-    const results: [en: string, ko: string, id: number][] = [];
+    const collator = new Intl.Collator("en", { sensitivity: "base", usage: "search" });
+
+    const exactResults: [en: string, ko: string, id: number][] = [];
+    const prefixResults: [en: string, ko: string, id: number][] = [];
 
     for (const value of values ?? []) {
-      if (value.startsWith(lookupString)) {
+      if (collator.compare(value.slice(0, lookupString.length), lookupString) === 0) {
         const [en, ko, wordId] = value.split("/");
-        if (results.push([key + en, ko, +wordId]) === limit) {
+
+        (en.length === lookupString.length ? exactResults : prefixResults).push([en, ko, +wordId]);
+
+        if (exactResults.length + prefixResults.length === limit) {
           break;
         }
       }
     }
 
-    return results;
+    exactResults.push(...prefixResults);
+
+    return exactResults;
   }
 
   /**
