@@ -118,7 +118,7 @@
   <SentenceInput {db} {okt} bind:selection={sentenceSelection} bind:suggestions bind:sentence />
 
   {#await Promise.all([oktPromise, dbPromise])}
-    <p>Loading....</p>
+    <p>로딩 중...</p>
   {:then _}
     <div class="sections" bind:this={sectionsElement}>
       {#each sections as selection, i (selection)}
