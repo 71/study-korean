@@ -89,17 +89,21 @@
       ? Type.Han
       : Type.Foreign;
 
-  $: originCells = (function computeOriginCells() {
+  $: tokenOrigin = (function computeOriginCells() {
+    // We display the origin (e.g. Hanja or English) below the text of the token. This function
+    // attempts to parse the origin to map characters 1-1. It also recognizes a few other patterns
+    // to display the origin in a more compact way.
     if ($tokenData?.origin == null) {
-      return undefined;
+      return { type: "none" } as const;
     }
 
     const [text, origin] = [$tokenData.text.replace(/^-|-$/, ""), $tokenData.origin];
 
     if (text === origin) {
-      return undefined;
+      return { type: "none" } as const;
     }
 
+    // Attempt to find a common prefix and suffix.
     let prefix = 0;
     while (prefix < text.length && prefix < origin.length && text[prefix] === origin[prefix]) {
       prefix++;
@@ -117,14 +121,49 @@
     const shortOrigin = origin.slice(prefix, origin.length - suffix);
 
     if (shortOrigin === "") {
-      return undefined;
+      return { type: "none" } as const;
     }
 
-    if (prefix === 0 && suffix === 0 && text.length !== origin.length) {
-      return origin;
+    const isPerfectMatch = prefix !== 0 || suffix !== 0 || text.length === origin.length;
+
+    if (isPerfectMatch) {
+      return { type: "match", prefix, origin: shortOrigin } as const;
     }
 
-    return { prefix, origin: shortOrigin };
+    // Special case: sometimes the origin is <han><han>/<han><han> to indicate multiple origins.
+    // In such a case, just use the first origin.
+    if (/^\p{Script=Han}+\/\p{Script=Han}+$/u.test(shortOrigin)) {
+      const [first, second] = shortOrigin.split("/");
+
+      if (first.length === second.length && first.length === text.length) {
+        return { type: "match", prefix, origin: first } as const;
+      }
+    }
+
+    // We couldn't find a perfect match, so we (trivially) tokenize the origin to provide some
+    // links.
+    const tokens: { text: string; isToken: boolean }[] = [];
+    const re = /\p{Script=Han}|\p{L}+/gu;
+    let offset = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = re.exec(origin)) !== null) {
+      const before = origin.slice(offset, match.index);
+
+      if (before !== "") {
+        tokens.push({ text: before, isToken: false });
+      }
+      tokens.push({ text: match[0], isToken: true });
+      offset = match.index + match[0].length;
+    }
+
+    const after = origin.slice(offset);
+
+    if (after !== "") {
+      tokens.push({ text: after, isToken: false });
+    }
+
+    return { type: "unknown", tokens } as const;
   })();
 
   let wordElement: WordElement;
@@ -212,19 +251,19 @@
           {$tokenData?.pronunciation}
         </div>
 
-        <table class:has-origin={typeof originCells !== "undefined"}>
+        <table class:has-origin={tokenOrigin.type !== "none"}>
           <tr class="text" on:click={playWordAudio}>
             {#each tokenText as character}
               <td>{character}</td>
             {/each}
           </tr>
 
-          {#if typeof originCells === "object"}
+          {#if tokenOrigin.type === "match"}
             <tr class="origin">
-              {#if originCells.prefix > 0}
-                <td colspan={originCells.prefix} />
+              {#if tokenOrigin.prefix > 0}
+                <td colspan={tokenOrigin.prefix} />
               {/if}
-              {#each originCells.origin as character}
+              {#each tokenOrigin.origin as character}
                 <td class="hanja">
                   <Token
                     text={character}
@@ -235,10 +274,26 @@
                 </td>
               {/each}
             </tr>
-          {:else if typeof originCells === "string"}
+          {:else if tokenOrigin.type === "unknown"}
             <tr class="origin">
               <td colspan={tokenText.length}>
-                ({originCells})
+                <span>
+                  ({#each tokenOrigin.tokens as { text, isToken }}
+                    {#if isToken}
+                      <Token
+                        {text}
+                        wordIds={[]}
+                        bind:selection={outputSelection}
+                        on:activeTokenClick={dispatchTokenUnselected}
+                      />
+                      <!--nobr-->
+                    {:else}
+                      {text}
+                      <!--nobr-->
+                    {/if}
+                    <!--nobr-->
+                  {/each})
+                </span>
               </td>
             </tr>
           {/if}
@@ -251,7 +306,7 @@
             <em class="readings">
               {#each hanReadings as hanReading, i}
                 {#if i > 0},{/if}
-                <span>{hanReading}</span>
+                <span>[{hanReading}]</span>
               {/each}
             </em>
           </div>
@@ -457,7 +512,7 @@
         font-size: 1.2em;
       }
 
-      & span {
+      & > span {
         display: block;
         margin-top: -0.3em;
         width: fit-content;
