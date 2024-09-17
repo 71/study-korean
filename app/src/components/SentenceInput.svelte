@@ -200,6 +200,7 @@
   .sentence-input {
     font-family: var(--title-font-family);
     font-size: 2.4em;
+    font-weight: 200;
     /* white-space: pre-wrap; Prevents nbsp insertion in contenteditable. */
     margin: 0.8em 0;
     display: flex;
