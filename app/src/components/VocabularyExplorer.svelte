@@ -89,6 +89,44 @@
       ? Type.Han
       : Type.Foreign;
 
+  $: originCells = (function computeOriginCells() {
+    if ($tokenData?.origin == null) {
+      return undefined;
+    }
+
+    const [text, origin] = [$tokenData.text.replace(/^-|-$/, ""), $tokenData.origin];
+
+    if (text === origin) {
+      return undefined;
+    }
+
+    let prefix = 0;
+    while (prefix < text.length && prefix < origin.length && text[prefix] === origin[prefix]) {
+      prefix++;
+    }
+
+    let suffix = 0;
+    while (
+      suffix < text.length &&
+      suffix < origin.length &&
+      text[text.length - 1 - suffix] === origin[origin.length - 1 - suffix]
+    ) {
+      suffix++;
+    }
+
+    const shortOrigin = origin.slice(prefix, origin.length - suffix);
+
+    if (shortOrigin === "") {
+      return undefined;
+    }
+
+    if (prefix === 0 && suffix === 0 && text.length !== origin.length) {
+      return origin;
+    }
+
+    return { prefix, origin: shortOrigin };
+  })();
+
   let wordElement: WordElement;
 
   $: tokenElement = wordElement?.querySelector(".text-box") as HTMLElement;
@@ -162,7 +200,6 @@
 
       <div
         class="text-box"
-        on:click={playWordAudio}
         on:keypress={withKey("Space", playWordAudio)}
         role="button"
         tabindex="0"
@@ -175,25 +212,40 @@
           {$tokenData?.pronunciation}
         </div>
 
-        <span class="text">{tokenText}</span>
+        <table class:has-origin={typeof originCells !== "undefined"}>
+          <tr class="text" on:click={playWordAudio}>
+            {#each tokenText as character}
+              <td>{character}</td>
+            {/each}
+          </tr>
+
+          {#if typeof originCells === "object"}
+            <tr class="origin">
+              {#if originCells.prefix > 0}
+                <td colspan={originCells.prefix} />
+              {/if}
+              {#each originCells.origin as character}
+                <td class="hanja">
+                  <Token
+                    text={character}
+                    wordIds={[]}
+                    bind:selection={outputSelection}
+                    on:activeTokenClick={dispatchTokenUnselected}
+                  />
+                </td>
+              {/each}
+            </tr>
+          {:else if typeof originCells === "string"}
+            <tr class="origin">
+              <td colspan={tokenText.length}>
+                ({originCells})
+              </td>
+            </tr>
+          {/if}
+        </table>
       </div>
 
       <div class="info" class:dense={$tokenData?.origin != null && $mostCommon != null}>
-        {#if $tokenData?.origin != null}
-          <div>
-            <em class="hanja">
-              {#each $tokenData.origin as character}
-                <Token
-                  text={character}
-                  wordIds={[]}
-                  bind:selection={outputSelection}
-                  on:activeTokenClick={dispatchTokenUnselected}
-                />
-              {/each}
-            </em>
-          </div>
-        {/if}
-
         {#if hanReadings !== undefined && hanReadings.length > 0}
           <div>
             <em class="readings">
@@ -226,7 +278,7 @@
         </div>
 
         {#if $mostCommon != null}
-          <div>
+          <div class="usage">
             <Token
               text="사용"
               wordIds={[uiWordIds.사용]}
@@ -369,7 +421,6 @@
   }
 
   .text-box {
-    z-index: -2;
     max-width: 80%;
     border: 1px solid color-mix(in srgb, var(--fg-primary) 30%, transparent);
     position: relative;
@@ -377,16 +428,39 @@
     display: flex;
     align-items: center;
 
-    & > .text {
+    & > table {
+      margin-left: 0.3em;
+      margin-right: 0.3em;
+      margin-bottom: 0.2em;
+
+      &.has-origin {
+        margin-bottom: 0.4em;
+      }
+    }
+
+    & .text {
       font-family: var(--title-font-family);
       font-size: 4em;
-      display: block;
-      margin: 0.1em 0.3em;
+      border-spacing: 0;
 
       @media (max-width: 500px) {
         & {
           font-size: 2.4em;
         }
+      }
+    }
+
+    & .origin > td {
+      padding-left: 4px;
+
+      &.hanja {
+        font-size: 1.2em;
+      }
+
+      & span {
+        display: block;
+        margin-top: -0.3em;
+        width: fit-content;
       }
     }
 
@@ -429,8 +503,11 @@
     background-color: color-mix(in srgb, var(--background) 70%, transparent);
   }
 
-  table {
+  table.hanja,
+  table.english {
     font-size: 1.2em;
+    position: relative;
+    z-index: 2;
 
     & td {
       text-wrap: nowrap;
@@ -456,10 +533,6 @@
     }
   }
 
-  em.hanja {
-    font-size: 1.4em;
-  }
-
   .separator-wrapper {
     background-color: var(--background);
     padding: 0.1em 0;
@@ -468,6 +541,11 @@
 
   .pos-picker > span {
     margin-left: 0.5em;
+  }
+
+  .usage {
+    font-size: 0.85em;
+    margin-top: 0.2em;
   }
 
   hr {

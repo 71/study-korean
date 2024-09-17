@@ -192,10 +192,10 @@
   }
 
   .masks {
-    z-index: 2;
+    z-index: 3;
   }
   .lines {
-    z-index: -1;
+    z-index: 1;
   }
 
   path {

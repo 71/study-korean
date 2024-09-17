@@ -189,6 +189,7 @@
     border-radius: 1em 1em 0em 0em;
     background: var(--bg-accent-1);
     padding: 0.7em 1em 0.5em 1em;
+    z-index: 10;
 
     & > button {
       background: none;

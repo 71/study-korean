@@ -4,6 +4,7 @@
   import { showTranslations } from "../store";
   import { nn } from "../utils";
   import { resizeTokens } from "../utils/tokens";
+  import MeaningViewRow from "./MeaningViewRow.svelte";
   import Token, { AmbiguousTokenSelection } from "./Token.svelte";
 
   export let meaning: Meaning;
@@ -41,41 +42,31 @@
 >
   <table>
     {#if $showTranslations}
-      <tr class="translation">
-        <td class="header">
-          <Token text="번역" wordIds={[uiWordIds.번역]} bind:selection />
-        </td>
-        <td>
-          {#each meaning.translation?.split(";") ?? "" as translation, i}
-            {#if i > 0},{/if}
-            <span>{translation.trim()}</span>
-          {:else}
-            <em>No translation available</em>
-          {/each}
-        </td>
-      </tr>
+      <MeaningViewRow class="translation" headerText="번역" wordId={uiWordIds.번역} bind:selection>
+        {#each meaning.translation?.split(";") ?? "" as translation, i}
+          {#if i > 0},{/if}
+          <span>{translation.trim()}</span>
+        {:else}
+          <em>No translation available</em>
+        {/each}
+      </MeaningViewRow>
     {/if}
 
-    <tr class="definition">
-      <td class="header">
-        <Token text="정의" wordIds={[uiWordIds.정의]} bind:selection />
-      </td>
-      <td>
-        {#each resizedTokens ?? [] as { text, wordIds }}
-          <Token {text} {wordIds} bind:selection />
-        {/each}
-      </td>
-    </tr>
+    <MeaningViewRow class="definition" headerText="정의" wordId={uiWordIds.정의} bind:selection>
+      {#each resizedTokens ?? [] as { text, wordIds }}
+        <Token {text} {wordIds} bind:selection />
+      {/each}
+    </MeaningViewRow>
 
     {#if $showTranslations && meaning.definitionTranslation != null}
-      <tr class="definition-translation">
-        <td class="header">
-          <Token text="번역" wordIds={[uiWordIds.번역]} bind:selection />
-        </td>
-        <td>
-          <span>{meaning.definitionTranslation}</span>
-        </td>
-      </tr>
+      <MeaningViewRow
+        class="definition-translation"
+        headerText="번역"
+        wordId={uiWordIds.번역}
+        bind:selection
+      >
+        <span>{meaning.definitionTranslation}</span>
+      </MeaningViewRow>
     {/if}
   </table>
 
@@ -103,29 +94,21 @@
 
   .meaning {
     font-size: 1.3em;
+    position: relative;
+    z-index: 2;
   }
 
-  tr.translation,
-  tr.definition-translation {
-    color: var(--fg-secondary);
-
-    & td:last-child {
-      font-size: 0.8em;
-    }
+  :global(.translation td:last-child),
+  :global(.definition-translation td:last-child) {
+    font-size: 0.85em;
   }
 
-  tr.translation td:last-child {
+  :global(.translation td:last-child) {
     text-transform: uppercase;
   }
 
-  td.header {
-    padding: 0 1em 1em 0;
-    font-size: 0.7em;
-    text-wrap: nowrap;
-  }
-
-  td {
-    vertical-align: top;
+  table {
+    border-spacing: 0 0.4em;
   }
 
   .related-words {
