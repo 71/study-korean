@@ -1,6 +1,6 @@
 {
-  "name": "Study Korean",
-  "short_name": "Study Korean",
+  "name": "한국어 사전",
+  "short_name": "한국어 사전",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
