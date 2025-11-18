@@ -8,7 +8,7 @@
 
       perSystem = { config, pkgs, ... }: {
         devShells.default = pkgs.mkShell {
-          nativeBuildInputs = [ pkgs.yarn ];
+          nativeBuildInputs = [ pkgs.pnpm ];
         };
       };
     };

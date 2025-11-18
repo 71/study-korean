@@ -20,16 +20,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16"
-          cache: yarn
-          cache-dependency-path: ${{ env.BUILD_PATH }}/yarn.lock
+          cache: pnpm
+          cache-dependency-path: ${{ env.BUILD_PATH }}/pnpm-lock.yaml
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
         working-directory: ${{ env.BUILD_PATH }}
       - name: Build
-        run: yarn run build:pb && yarn run build:data && yarn run build
+        run: pnpm run build:pb && pnpm run build:data && pnpm run build
         working-directory: ${{ env.BUILD_PATH }}
       - name: Setup Pages
         uses: actions/configure-pages@v3
