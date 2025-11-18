@@ -15,26 +15,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
+
+      - name: Enable Corepack
+        run: corepack enable
+        working-directory: ${{ env.BUILD_PATH }}
+
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
-          node-version: "16"
+          node-version: 24
           cache: pnpm
           cache-dependency-path: ${{ env.BUILD_PATH }}/pnpm-lock.yaml
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
+
       - name: Install dependencies
         run: pnpm install
         working-directory: ${{ env.BUILD_PATH }}
+
       - name: Build
         run: pnpm run build:pb && pnpm run build:data && pnpm run build
         working-directory: ${{ env.BUILD_PATH }}
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
+
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ env.BUILD_PATH }}/dist
 
@@ -42,12 +49,19 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     needs: build
+
     permissions:
       pages: write
       id-token: write
+
     runs-on: ubuntu-latest
+
     steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
